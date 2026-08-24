@@ -54,3 +54,40 @@ Content-Type: application/json
   "precoVenda": 13.99,
   "ativo": true
 }
+
+###
+
+POST http://localhost:8080/api/produtos
+Content-Type: application/json
+
+{
+  "nome": "",
+  "codigoInterno": "TESTe001",
+  "gtin": "7890000000001",
+  "precoVenda": -10,
+  "ativo": true
+}
+
+###
+POST http://localhost:8080/api/produtos
+Content-Type: application/json
+
+{
+  "nome": "Feijão 1kg",
+  "codigoInterno": "FEI001",
+  "gtin": "7891234567801",
+  "precoVenda": 12.50,
+  "ativo": true
+}
+
+###
+POST http://localhost:8080/api/produtos
+Content-Type: application/json
+
+{
+  "nome": "",
+  "codigoInterno": "TESTE003",
+  "gtin": "7890000000003",
+  "precoVenda": -10,
+  "ativo": true
+}

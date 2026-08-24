@@ -1,6 +1,9 @@
 package br.com.pdv.produto;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 
@@ -12,6 +15,7 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "O nome do produto é obrigatório")
     @Column(nullable = false)
     private String nome;
 
@@ -21,6 +25,8 @@ public class Produto {
     @Column(unique = true)
     private String gtin;
 
+    @NotNull(message = "O preço de venda é obrigatório")
+    @Positive(message = "O preço de venda deve ser maior que zero")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precoVenda;
 

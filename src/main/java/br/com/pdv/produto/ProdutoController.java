@@ -1,5 +1,6 @@
 package br.com.pdv.produto;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -15,7 +16,7 @@ public class ProdutoController {
     }
 
     @PostMapping
-    public ResponseEntity<Produto> cadastrar(@RequestBody Produto produto) {
+    public ResponseEntity<Produto> cadastrar(@Valid @RequestBody Produto produto) {
         Produto produtoSalvo = produtoService.salvar(produto);
 
         return ResponseEntity.status(201).body(produtoSalvo);
