@@ -19,7 +19,7 @@ public class ProdutoService {
     }
 
     public List<Produto> listarTodos() {
-        return produtoRepository.findAll();
+        return produtoRepository.findByAtivoTrue();
     }
 
     public Optional<Produto> buscarPorId(Long id) {
@@ -27,11 +27,11 @@ public class ProdutoService {
     }
 
     public Optional<Produto> buscarPorCodigoInterno(String codigoInterno) {
-        return produtoRepository.findByCodigoInterno(codigoInterno);
+        return produtoRepository.findByCodigoInternoAndAtivoTrue(codigoInterno);
     }
 
     public Optional<Produto> buscarPorGtin(String gtin) {
-        return produtoRepository.findByGtin(gtin);
+        return produtoRepository.findByGtinAndAtivoTrue(gtin);
     }
 
     public Optional<Produto> atualizar(Long id, Produto novosDados) {
@@ -53,4 +53,22 @@ public class ProdutoService {
 
         return Optional.of(produtoAtualizado);
     }
+
+    public boolean desativar(Long id) {
+
+        Optional<Produto> produtoExistente = produtoRepository.findById(id);
+
+        if (produtoExistente.isEmpty()) {
+            return false;
+        }
+
+        Produto produto = produtoExistente.get();
+
+        produto.setAtivo(false);
+
+        produtoRepository.save(produto);
+
+        return true;
+    }
+
 }

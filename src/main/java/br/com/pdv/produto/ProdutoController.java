@@ -60,4 +60,17 @@ public class ProdutoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> desativar(@PathVariable Long id) {
+
+        boolean desativado = produtoService.desativar(id);
+
+        if (!desativado) {
+            return ResponseEntity.notFound().build();
+
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

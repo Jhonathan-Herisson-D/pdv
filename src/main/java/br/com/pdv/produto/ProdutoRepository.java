@@ -2,13 +2,14 @@ package br.com.pdv.produto;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-    Optional<Produto> findByCodigoInterno(String codigoInterno);
+    Optional<Produto> findByCodigoInternoAndAtivoTrue(String codigoInterno);
 
-    Optional<Produto> findByGtin(String gtin);
+    Optional<Produto> findByGtinAndAtivoTrue(String gtin);
 
-    Long id(Long id);
+    List<Produto> findByAtivoTrue();
 }
