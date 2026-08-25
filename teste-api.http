@@ -107,3 +107,57 @@ GET http://localhost:8080/api/produtos/gtin/7891234567890
 
 ###
 GET http://localhost:8080/api/produtos/gtin/7891234567801
+
+###
+POST http://localhost:8080/api/produtos
+Content-Type: application/json
+
+{
+  "nome": "Produto com GTIN repetido",
+  "codigoInterno": "TESTE999",
+  "gtin": "7891234567801",
+  "precoVenda": 15.00,
+  "ativo": true
+}
+
+###
+GET http://localhost:8080/api/produtos
+
+###
+POST http://localhost:8080/api/produtos
+Content-Type: application/json
+
+{
+  "nome": "test código interno",
+  "codigoInterno": "FEI001",
+  "gtin": "78912345678999",
+  "precoVenda": 50.00,
+  "ativo": true
+}
+
+###
+PUT http://localhost:8080/api/produtos/2
+Content-Type: application/json
+
+{
+  "nome": "test aqui",
+  "codigoInterno": "tesf001",
+  "gtin": "7891234567890",
+  "precoVenda": 13.99,
+  "ativo": true
+}
+
+###
+GET http://localhost:8080/api/produtos
+
+###
+PUT http://localhost:8080/api/produtos/2
+Content-Type: application/json
+
+{
+"ativo": true,
+"codigoInterno": "ARR001",
+"gtin": "7891234567487",
+"nome": "Arroz 5kg",
+"precoVenda": 28.99
+}

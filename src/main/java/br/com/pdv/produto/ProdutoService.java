@@ -15,6 +15,23 @@ public class ProdutoService {
     }
 
     public Produto salvar(Produto produto) {
+
+        if (produto.getGtin() != null
+                && produtoRepository.existsByGtin(produto.getGtin())) {
+
+            throw new IllegalArgumentException(
+                    "Já existe um produto cadastrado com este GTIN"
+            );
+        }
+
+        if (produto.getCodigoInterno() != null
+                && produtoRepository.existsByCodigoInterno(produto.getCodigoInterno())) {
+
+            throw new IllegalArgumentException(
+                    "Já existe um produto cadastrado com este código interno"
+            );
+        }
+
         return produtoRepository.save(produto);
     }
 
@@ -39,6 +56,23 @@ public class ProdutoService {
 
         if (produtoExistente.isEmpty()) {
             return Optional.empty();
+        }
+
+        if (novosDados.getGtin() != null
+                && produtoRepository.existsByGtinAndIdNot(novosDados.getGtin(), id)) {
+
+            throw new IllegalArgumentException(
+                    "Já existe outro produto cadastrado com este GTIN"
+            );
+        }
+
+        if (novosDados.getCodigoInterno() != null
+                && produtoRepository.existsByCodigoInternoAndIdNot(
+                        novosDados.getCodigoInterno(), id)) {
+
+            throw new IllegalArgumentException(
+                    "Já existe outro produto cadastrado com este código interno"
+            );
         }
 
         Produto produto = produtoExistente.get();
