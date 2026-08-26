@@ -20,4 +20,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     boolean existsByGtinAndIdNot(String gtin, Long id);
 
     boolean existsByCodigoInternoAndIdNot(String condigoInterno, Long id);
+
+    List<Produto> findByNomeContainingIgnoreCaseAndAtivoTrue(String nome);
+
 }

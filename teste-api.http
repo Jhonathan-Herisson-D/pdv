@@ -161,3 +161,6 @@ Content-Type: application/json
 "nome": "Arroz 5kg",
 "precoVenda": 28.99
 }
+
+###
+GET http://localhost:8080/api/produtos/nome/ar

@@ -39,6 +39,11 @@ public class ProdutoService {
         return produtoRepository.findByAtivoTrue();
     }
 
+    public List<Produto> buscarPorNome(String nome) {
+        return produtoRepository
+                .findByNomeContainingIgnoreCaseAndAtivoTrue(nome);
+    }
+
     public Optional<Produto> buscarPorId(Long id) {
         return produtoRepository.findById(id);
     }
