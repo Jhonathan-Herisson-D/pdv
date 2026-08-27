@@ -110,4 +110,23 @@ public class ProdutoService {
         return true;
     }
 
+    public long contarAtivos() {
+        return produtoRepository.countByAtivoTrue();
+    }
+
+    public boolean reativar(Long id) {
+        Optional<Produto> produtoExistente = produtoRepository.findById(id);
+
+        if (produtoExistente.isEmpty()) {
+            return false;
+        }
+
+        Produto produto = produtoExistente.get();
+        produto.setAtivo(true);
+        produtoRepository.save(produto);
+
+        return true;
+
+    }
+
 }

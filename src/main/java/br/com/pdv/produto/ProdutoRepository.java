@@ -23,4 +23,5 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     List<Produto> findByNomeContainingIgnoreCaseAndAtivoTrue(String nome);
 
+    long countByAtivoTrue();
 }

@@ -79,4 +79,21 @@ public class ProdutoController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/quantidade")
+    public long contarAtivos() {
+        return produtoService.contarAtivos();
+    }
+
+    @PutMapping("/{id}/reativar")
+    public ResponseEntity<Void> reativar(@PathVariable Long id) {
+        boolean reativado = produtoService.reativar(id);
+
+        if (!reativado) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
+
+    }
+
 }

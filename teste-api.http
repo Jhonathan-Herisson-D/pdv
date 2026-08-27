@@ -164,3 +164,15 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/api/produtos/nome/ar
+
+###
+GET http://localhost:8080/api/produtos/quantidade
+
+###
+PUT http://localhost:8080/api/produtos/1/reativar
+
+###
+GET http://localhost:8080/api/produtos
+
+###
+GET http://localhost:8080/api/produtos/quantidade
