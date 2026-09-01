@@ -176,3 +176,25 @@ GET http://localhost:8080/api/produtos
 
 ###
 GET http://localhost:8080/api/produtos/quantidade
+
+###
+PUT http://localhost:8080/api/produtos/2
+Content-Type: application/json
+
+{
+  "nome": "",
+  "codigoInterno": "ARR001",
+  "gtin": "7891234567001",
+  "precoVenda": -5,
+  "ativo": true
+}
+
+###
+PUT http://localhost:8080/api/produtos/4
+Content-Type: application/json
+
+{
+  "nome": "Feijão 2Kg",
+  "codigoInterno": "FEI001",
+  "precoVenda": 13.55
+}

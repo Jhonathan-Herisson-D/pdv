@@ -59,7 +59,7 @@ public class ProdutoController {
     @PutMapping("/{id}")
     public ResponseEntity<Produto> atualizar(
             @PathVariable Long id,
-            @RequestBody Produto produto) {
+            @Valid @RequestBody Produto produto) {
 
         return produtoService.atualizar(id, produto)
                 .map(ResponseEntity ::ok)
