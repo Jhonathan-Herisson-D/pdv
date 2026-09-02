@@ -198,3 +198,11 @@ Content-Type: application/json
   "codigoInterno": "FEI001",
   "precoVenda": 13.55
 }
+
+###
+POST http://localhost:8080/api/caixas/abrir
+Content-Type: application/json
+
+{
+  "saldoInicial": 200.00
+}

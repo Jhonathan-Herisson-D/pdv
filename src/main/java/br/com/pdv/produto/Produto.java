@@ -1,9 +1,8 @@
 package br.com.pdv.produto;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
+
 
 import java.math.BigDecimal;
 
