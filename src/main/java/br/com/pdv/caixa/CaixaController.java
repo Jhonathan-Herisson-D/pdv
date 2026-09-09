@@ -26,4 +26,20 @@ public class CaixaController {
 
         return ResponseEntity.status(201).body(caixa);
     }
+
+    @GetMapping("/aberto")
+    public ResponseEntity<Caixa> buscarCaixaAberto() {
+
+        return caixaService.buscarCaixaAberto()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/fechar")
+    public ResponseEntity<Caixa> fecharCaixa() {
+
+        return caixaService.fecharCaixaAberto()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

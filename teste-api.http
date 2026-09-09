@@ -206,3 +206,12 @@ Content-Type: application/json
 {
   "saldoInicial": 200.00
 }
+
+###
+GET http://localhost:8080/api/caixas/aberto
+
+###
+PUT http://localhost:8080/api/caixas/fechar
+
+###
+GET http://localhost:8080/api/caixas/aberto

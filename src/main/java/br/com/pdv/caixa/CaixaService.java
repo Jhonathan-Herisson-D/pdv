@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class CaixaService {
@@ -28,5 +29,27 @@ public class CaixaService {
         caixa.setAberto(true);
 
         return caixaRepository.save(caixa);
+    }
+
+    public Optional<Caixa> buscarCaixaAberto() {
+        return caixaRepository.findByAbertoTrue();
+    }
+
+    public Optional<Caixa> fecharCaixaAberto() {
+
+        Optional<Caixa> caixaAberto = caixaRepository.findByAbertoTrue();
+
+        if (caixaAberto.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Caixa caixa = caixaAberto.get();
+
+        caixa.setAberto(false);
+        caixa.setDataFechamento(LocalDateTime.now());
+
+        Caixa caixaFechado = caixaRepository.save(caixa);
+
+        return Optional.of(caixaFechado);
     }
 }
