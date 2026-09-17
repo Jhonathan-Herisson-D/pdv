@@ -215,3 +215,44 @@ PUT http://localhost:8080/api/caixas/fechar
 
 ###
 GET http://localhost:8080/api/caixas/aberto
+
+###
+GET http://localhost:8080/api/caixas/aberto
+
+###
+POST http://localhost:8080/api/caixas/abrir
+Content-Type: application/json
+
+{
+  "saldoInicial": 200.00
+}
+
+###
+POST http://localhost:8080/api/caixas/movimentacoes/suprimento
+Content-Type: application/json
+
+{
+  "valor": 100.00,
+  "descricao": "Troco adicional"
+}
+
+###
+POST http://localhost:8080/api/caixas/movimentacoes/sangria
+Content-Type: application/json
+
+{
+  "valor": 50.00,
+  "descricao": "Retirada para o cofre"
+}
+
+###
+POST http://localhost:8080/api/caixas/movimentacoes/sangria
+Content-Type: application/json
+
+{
+  "valor": -20.00,
+  "descricao": "Teste"
+}
+
+###
+GET http://localhost:8080/api/caixas/movimentacoes
