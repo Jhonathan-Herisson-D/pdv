@@ -256,3 +256,27 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/api/caixas/movimentacoes
+
+###
+GET http://localhost:8080/api/caixas/aberto
+
+###
+GET http://localhost:8080/api/caixas/saldo-esperado
+
+###
+POST http://localhost:8080/api/caixas/movimentacoes/suprimento
+Content-Type: application/json
+
+{
+  "valor": 100.00,
+  "descricao": "Troco adicional"
+}
+
+###
+POST http://localhost:8080/api/caixas/movimentacoes/sangria
+Content-Type: application/json
+
+{
+  "valor": 50.00,
+  "descricao": "Retirada"
+}

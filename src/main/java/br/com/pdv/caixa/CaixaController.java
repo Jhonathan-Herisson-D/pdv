@@ -42,4 +42,14 @@ public class CaixaController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/saldo-esperado")
+    public ResponseEntity<Map<String, BigDecimal>> saldoEsperado() {
+
+        BigDecimal saldo = caixaService.calcularSaldoEsperado();
+
+        return ResponseEntity.ok(
+                Map.of("saldoEsperado", saldo)
+        );
+    }
 }

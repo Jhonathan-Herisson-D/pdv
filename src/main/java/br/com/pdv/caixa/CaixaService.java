@@ -10,9 +10,14 @@ import java.util.Optional;
 public class CaixaService {
 
     private final CaixaRepository caixaRepository;
+    private final MovimentacaoCaixaRepository movimentacaoCaixaRepository;
 
-    public CaixaService(CaixaRepository caixaRepository) {
+    public CaixaService(
+            CaixaRepository caixaRepository,
+            MovimentacaoCaixaRepository movimentacaoCaixaRepository) {
+
         this.caixaRepository = caixaRepository;
+        this.movimentacaoCaixaRepository = movimentacaoCaixaRepository;
     }
 
     public Caixa abrir(BigDecimal saldoInicial) {
@@ -51,5 +56,31 @@ public class CaixaService {
         Caixa caixaFechado = caixaRepository.save(caixa);
 
         return Optional.of(caixaFechado);
+    }
+
+    public BigDecimal calcularSaldoEsperado() {
+
+        Caixa caixa = caixaRepository.findByAbertoTrue()
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Não existe caixa aberto"
+                        )
+                );
+
+        BigDecimal suprimento =
+                movimentacaoCaixaRepository.somarPorCaixaETipo(
+                        caixa.getId(),
+                        TipoMovimentacaoCaixa.SUPRIMENTO
+                );
+
+        BigDecimal sangrias =
+                movimentacaoCaixaRepository.somarPorCaixaETipo(
+                        caixa.getId(),
+                        TipoMovimentacaoCaixa.SANGRIA
+                );
+
+        return caixa.getSaldoInicial()
+                .add(suprimento)
+                .subtract(sangrias);
     }
 }
