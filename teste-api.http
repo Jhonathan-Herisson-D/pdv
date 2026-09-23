@@ -280,3 +280,36 @@ Content-Type: application/json
   "valor": 50.00,
   "descricao": "Retirada"
 }
+
+###
+GET http://localhost:8080/api/caixas/aberto
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+POST http://localhost:8080/api/vendas/1/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 2
+}
+
+###
+GET http://localhost:8080/api/vendas/1
+
+###
+POST http://localhost:8080/api/vendas/1/itens
+Content-Type: application/json
+
+{
+  "produtoId": 4,
+  "quantidade": 1
+}
+
+###
+GET http://localhost:8080/api/vendas/1
+
+###
+GET http://localhost:8080/api/vendas/1/itens
