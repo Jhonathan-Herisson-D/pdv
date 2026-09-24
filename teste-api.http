@@ -313,3 +313,28 @@ GET http://localhost:8080/api/vendas/1
 
 ###
 GET http://localhost:8080/api/vendas/1/itens
+
+###
+PUT http://localhost:8080/api/vendas/1/itens/1/quantidade
+Content-Type: application/json
+
+{
+  "quantidade": 3
+}
+
+###
+GET http://localhost:8080/api/vendas/1
+
+###
+PUT http://localhost:8080/api/vendas/1/itens/1/quantidade
+Content-Type: application/json
+
+{
+  "quantidade": 0
+}
+
+###
+DELETE http://localhost:8080/api/vendas/1/itens/2
+
+###
+GET http://localhost:8080/api/vendas/1/itens

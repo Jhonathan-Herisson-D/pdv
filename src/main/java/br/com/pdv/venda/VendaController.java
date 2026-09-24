@@ -57,4 +57,31 @@ public class VendaController {
 
         return ResponseEntity.ok(vendaService.listarItens(vendaId));
     }
+
+    @PutMapping("/{vendaId}/itens/{itemId}/quantidade")
+    public ResponseEntity<ItemVenda> alterarQuantidadeItem(
+            @PathVariable Long vendaId,
+            @PathVariable Long itemId,
+            @RequestBody Map<String, Object> body) {
+
+        BigDecimal quantidade = new BigDecimal(body.get("quantidade").toString());
+
+        ItemVenda item = vendaService.alterarQuantidadeItem(
+                vendaId,
+                itemId,
+                quantidade
+        );
+
+        return ResponseEntity.ok(item);
+    }
+
+    @DeleteMapping("/{vendaId}/itens/{itemId}")
+    public ResponseEntity<Void> removerItem(
+            @PathVariable Long vendaId,
+            @PathVariable Long itemId) {
+
+        vendaService.removerItem(vendaId, itemId);
+
+        return ResponseEntity.noContent().build();
+    }
 }

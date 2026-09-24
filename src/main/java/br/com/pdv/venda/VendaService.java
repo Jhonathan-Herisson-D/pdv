@@ -122,4 +122,94 @@ public class VendaService {
 
         return itemVendaRepository.findByVendaIdOrderByIdAsc(vendaId);
     }
+
+    public ItemVenda alterarQuantidadeItem(
+            Long vendaId,
+            Long itemId,
+            BigDecimal novaQuantidade) {
+
+        Venda venda = vendaRepository.findById(vendaId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Venda não encontrada"
+                        )
+                );
+
+        if (venda.getStatus() != StatusVenda.ABERTA) {
+            throw new IllegalArgumentException(
+                    "Só é possivel alterar itens de uma venda aberta"
+            );
+        }
+
+        ItemVenda item = itemVendaRepository.findById(itemId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Item não encontrado"
+                        )
+                );
+
+        if (!item.getVenda().getId().equals(vendaId)) {
+            throw new IllegalArgumentException(
+                    "O item não pertece a esta venda"
+            );
+        }
+
+        if (novaQuantidade == null || novaQuantidade.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException(
+                    "A quantidade deve ser maior que zero"
+            );
+        }
+
+        item.setQuantidade(novaQuantidade);
+
+        BigDecimal novoSubtotal = item.getPrecoUnitario().multiply(novaQuantidade);
+
+        item.setSubtotal(novoSubtotal);
+
+        ItemVenda itemAtualizado = itemVendaRepository.save(item);
+
+        BigDecimal novoTotal = itemVendaRepository.somarSubtotalPorVenda(vendaId);
+
+        venda.setTotal(novoTotal);
+        vendaRepository.save(venda);
+
+        return itemAtualizado;
+    }
+
+    public void removerItem(Long vendaId, Long itemId) {
+
+        Venda venda = vendaRepository.findById(vendaId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Venda não encontrada"
+                        )
+                );
+
+        if (venda.getStatus() != StatusVenda.ABERTA) {
+            throw new IllegalArgumentException(
+                    "Só é possível remover itens de uma venda aberta"
+            );
+        }
+
+        ItemVenda item = itemVendaRepository.findById(itemId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Item não encontrado"
+                        )
+                );
+
+        if (!item.getVenda().getId().equals(vendaId)) {
+            throw new IllegalArgumentException(
+                    "O item não pertence a essa venda"
+            );
+        }
+
+        itemVendaRepository.delete(item);
+
+        BigDecimal novoTotal = itemVendaRepository.somarSubtotalPorVenda(vendaId);
+
+        venda.setTotal(novoTotal);
+
+        vendaRepository.save(venda);
+    }
 }
