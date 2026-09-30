@@ -338,3 +338,69 @@ DELETE http://localhost:8080/api/vendas/1/itens/2
 
 ###
 GET http://localhost:8080/api/vendas/1/itens
+
+###
+GET http://localhost:8080/api/vendas/1
+
+###
+POST http://localhost:8080/api/vendas/1/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valor": 41.97
+}
+
+###
+GET http://localhost:8080/api/vendas/1/pagamentos
+
+###
+PUT http://localhost:8080/api/vendas/1/finalizar
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+POST http://localhost:8080/api/vendas/2/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 2
+}
+
+###
+PUT http://localhost:8080/api/vendas/2/finalizar
+
+###
+POST http://localhost:8080/api/vendas/2/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valor": 10.00
+}
+
+###
+POST http://localhost:8080/api/vendas/2/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "DINHEIRO",
+  "valor": 17.98
+}
+
+###
+PUT http://localhost:8080/api/vendas/2/finalizar
+
+###
+GET http://localhost:8080/api/vendas/2/pagamentos
+
+###
+POST http://localhost:8080/api/vendas/2/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valor": 5.00
+}

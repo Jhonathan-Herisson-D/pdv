@@ -18,17 +18,21 @@ public class VendaService {
     private final CaixaRepository caixaRepository;
     private final ItemVendaRepository itemVendaRepository;
     private final ProdutoRepository produtoRepository;
+    private final PagamentoRepository pagamentoRepository;
 
     public VendaService(
             VendaRepository vendaRepository,
             CaixaRepository caixaRepository,
             ItemVendaRepository itemVendaRepository,
-            ProdutoRepository produtoRepository) {
+            ProdutoRepository produtoRepository,
+            PagamentoRepository pagamentoRepository) {
 
         this.vendaRepository = vendaRepository;
         this.caixaRepository = caixaRepository;
         this.itemVendaRepository = itemVendaRepository;
         this.produtoRepository = produtoRepository;
+        this.pagamentoRepository = pagamentoRepository;
+
     }
 
     public Venda iniciarVenda() {
@@ -211,5 +215,41 @@ public class VendaService {
         venda.setTotal(novoTotal);
 
         vendaRepository.save(venda);
+    }
+
+    public Venda finalizarVenda(Long vendaId) {
+
+        Venda venda = vendaRepository.findById(vendaId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Venda não encontrada"
+                        )
+                );
+        if (venda.getStatus() !=StatusVenda.ABERTA) {
+            throw new IllegalArgumentException(
+                    "A venda não está aberta"
+            );
+        }
+
+        if (venda.getTotal().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException(
+                    "Não é possível finalizar uma venda sem itens"
+            );
+        }
+
+        BigDecimal totalPago = pagamentoRepository.somarPagamentosPorVenda(vendaId);
+
+        if (totalPago.compareTo(venda.getTotal()) <0) {
+
+            BigDecimal valorFaltante = venda.getTotal().subtract(totalPago);
+
+            throw new IllegalArgumentException(
+                    "Pagamento insuficiente. Faltam R$ " + valorFaltante
+            );
+        }
+
+        venda.setStatus(StatusVenda.FINALIZADA);
+
+        return vendaRepository.save(venda);
     }
 }

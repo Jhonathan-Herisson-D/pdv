@@ -84,4 +84,13 @@ public class VendaController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/finalizar")
+    public ResponseEntity<Venda> finalizar(
+            @PathVariable Long id) {
+
+        Venda venda = vendaService.finalizarVenda(id);
+
+        return ResponseEntity.ok(venda);
+    }
 }
