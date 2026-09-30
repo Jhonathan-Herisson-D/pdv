@@ -252,4 +252,24 @@ public class VendaService {
 
         return vendaRepository.save(venda);
     }
+
+    public Venda cancelarVenda(Long vendaId) {
+
+        Venda venda = vendaRepository.findById(vendaId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Venda não encontrada"
+                        )
+                );
+
+        if (venda.getStatus() != StatusVenda.ABERTA) {
+            throw new IllegalArgumentException(
+                    "Só é possível cancelar uma venda aberta"
+            );
+        }
+
+        venda.setStatus(StatusVenda.CANCELADA);
+
+        return vendaRepository.save(venda);
+    }
 }

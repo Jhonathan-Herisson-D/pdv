@@ -93,4 +93,13 @@ public class VendaController {
 
         return ResponseEntity.ok(venda);
     }
+
+    @PutMapping("/{id}/cancelar")
+    public ResponseEntity<Venda> cancelar(
+            @PathVariable Long id) {
+
+        Venda venda = vendaService.cancelarVenda(id);
+
+        return ResponseEntity.ok(venda);
+    }
 }

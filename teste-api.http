@@ -443,3 +443,21 @@ GET http://localhost:8080/api/caixas/saldo-esperado
 
 ###
 GET http://localhost:8080/api/caixas/5/movimentacoes
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+PUT http://localhost:8080/api/vendas/5/cancelar
+
+###
+POST http://localhost:8080/api/vendas/5/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 1
+}
+
+###
+PUT http://localhost:8080/api/vendas/4/cancelar
