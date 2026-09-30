@@ -17,4 +17,13 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
            WHERE p.venda.id = :vendaId
            """)
     BigDecimal somarPagamentosPorVenda(@Param("vendaId") Long vendaId);
+
+    @Query("""
+           SELECT COALESCE(SUM(p.valor), 0)
+           FROM Pagamento p 
+           WHERE p.venda.caixa.id = :caixaId
+             AND p.tipo = br.com.pdv.venda.TipoPagamento.DINHEIRO
+             AND p.venda.status = br.com.pdv.venda.StatusVenda.FINALIZADA
+           """)
+    BigDecimal somarDinheiroPorCaixa(@Param("caixaId") Long caixaId);
 }

@@ -404,3 +404,42 @@ Content-Type: application/json
   "tipo": "PIX",
   "valor": 5.00
 }
+
+###
+POST http://localhost:8080/api/vendas/3/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "DINHEIRO",
+  "valorRecebido": 50.00
+}
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+POST http://localhost:8080/api/vendas/4/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 2
+}
+
+###
+POST http://localhost:8080/api/vendas/4/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "DINHEIRO",
+  "valorRecebido": 50.00
+}
+
+###
+PUT http://localhost:8080/api/vendas/4/finalizar
+
+###
+GET http://localhost:8080/api/caixas/saldo-esperado
+
+###
+GET http://localhost:8080/api/caixas/5/movimentacoes

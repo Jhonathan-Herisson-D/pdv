@@ -24,11 +24,11 @@ public class PagamentoController {
             @RequestBody Map<String, Object> body) {
 
         TipoPagamento tipo = TipoPagamento.valueOf(body.get("tipo").toString());
-        BigDecimal valor = new  BigDecimal(body.get("valor").toString());
+        BigDecimal valorRecebido  = new  BigDecimal(body.get("valorRecebido").toString());
         Pagamento pagamento = pagamentoService.registrar(
                 vendaId,
                 tipo,
-                valor
+                valorRecebido
         );
 
         return ResponseEntity.status(201).body(pagamento);

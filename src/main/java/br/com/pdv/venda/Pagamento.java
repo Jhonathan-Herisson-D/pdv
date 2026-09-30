@@ -24,6 +24,12 @@ public class Pagamento {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valor;
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal valorRecebido;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal troco;
+
     @Column(nullable = false)
     private LocalDateTime dataHora;
 
@@ -41,6 +47,22 @@ public class Pagamento {
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
+    }
+
+    public BigDecimal getValorRecebido() {
+        return valorRecebido;
+    }
+
+    public void setValorRecebido(BigDecimal valorRecebido) {
+        this.valorRecebido = valorRecebido;
+    }
+
+    public BigDecimal getTroco() {
+        return troco;
+    }
+
+    public void setTroco(BigDecimal troco) {
+        this.troco = troco;
     }
 
     public TipoPagamento getTipo() {

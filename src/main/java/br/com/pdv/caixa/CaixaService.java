@@ -1,5 +1,6 @@
 package br.com.pdv.caixa;
 
+import br.com.pdv.venda.PagamentoRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,13 +12,16 @@ public class CaixaService {
 
     private final CaixaRepository caixaRepository;
     private final MovimentacaoCaixaRepository movimentacaoCaixaRepository;
+    private final PagamentoRepository pagamentoRepository;
 
     public CaixaService(
             CaixaRepository caixaRepository,
-            MovimentacaoCaixaRepository movimentacaoCaixaRepository) {
+            MovimentacaoCaixaRepository movimentacaoCaixaRepository,
+            PagamentoRepository pagamentoRepository) {
 
         this.caixaRepository = caixaRepository;
         this.movimentacaoCaixaRepository = movimentacaoCaixaRepository;
+        this.pagamentoRepository = pagamentoRepository;
     }
 
     public Caixa abrir(BigDecimal saldoInicial) {
@@ -79,8 +83,13 @@ public class CaixaService {
                         TipoMovimentacaoCaixa.SANGRIA
                 );
 
+        BigDecimal totalDinheiro =
+                pagamentoRepository.somarDinheiroPorCaixa(caixa.getId());
+
+
         return caixa.getSaldoInicial()
                 .add(suprimento)
+                .add(totalDinheiro)
                 .subtract(sangrias);
     }
 }

@@ -23,7 +23,7 @@ public class PagamentoService {
     public Pagamento registrar(
             Long vendaId,
             TipoPagamento tipo,
-            BigDecimal valor) {
+            BigDecimal valorRecebido ) {
 
         Venda venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() ->
@@ -38,9 +38,19 @@ public class PagamentoService {
             );
         }
 
-        if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
+        if (valorRecebido == null || valorRecebido.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(
                     "O valor do pagamento deve ser maior que zero"
+            );
+        }
+
+        BigDecimal totalPago = pagamentoRepository.somarPagamentosPorVenda(vendaId);
+
+        BigDecimal valorRestante = venda.getTotal().subtract(totalPago);
+
+        if (valorRestante.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException(
+                    "A venda já está totalmente paga"
             );
         }
 
@@ -48,8 +58,30 @@ public class PagamentoService {
 
         pagamento.setVenda(venda);
         pagamento.setTipo(tipo);
-        pagamento.setValor(valor);
         pagamento.setDataHora(LocalDateTime.now());
+
+        if (tipo == TipoPagamento.DINHEIRO) {
+
+            BigDecimal valorAplicado = valorRecebido.min(valorRestante);
+
+            BigDecimal troco = valorRecebido.subtract(valorAplicado);
+
+            pagamento.setValor(valorAplicado);
+            pagamento.setValorRecebido(valorRecebido);
+            pagamento.setTroco(troco);
+
+        } else {
+
+            if (valorRecebido.compareTo(valorRestante) > 0) {
+                throw new IllegalArgumentException(
+                        "O pagamento não pode ser maior que o valor restante da venda"
+                );
+            }
+
+            pagamento.setValor(valorRecebido);
+            pagamento.setValorRecebido(null);
+            pagamento.setTroco(null);
+        }
 
         return pagamentoRepository.save(pagamento);
     }
