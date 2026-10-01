@@ -24,6 +24,12 @@ public class Caixa {
     @Column(nullable = false)
     private Boolean aberto = true;
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal saldoFinal;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal diferenca;
+
     public Long getId() {
         return id;
     }
@@ -62,5 +68,21 @@ public class Caixa {
 
     public void setAberto(Boolean aberto) {
         this.aberto = aberto;
+    }
+
+    public BigDecimal getSaldoFinal() {
+        return saldoFinal;
+    }
+
+    public void setSaldoFinal(BigDecimal saldoFinal) {
+        this.saldoFinal = saldoFinal;
+    }
+
+    public BigDecimal getDiferenca() {
+        return diferenca;
+    }
+
+    public void setDiferenca(BigDecimal diferenca) {
+        this.diferenca = diferenca;
     }
 }

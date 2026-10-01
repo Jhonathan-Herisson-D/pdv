@@ -44,7 +44,7 @@ public class CaixaService {
         return caixaRepository.findByAbertoTrue();
     }
 
-    public Optional<Caixa> fecharCaixaAberto() {
+    public Optional<Caixa> fecharCaixaAberto(BigDecimal saldoFinal) {
 
         Optional<Caixa> caixaAberto = caixaRepository.findByAbertoTrue();
 
@@ -52,7 +52,19 @@ public class CaixaService {
             return Optional.empty();
         }
 
+        if (saldoFinal == null || saldoFinal.compareTo(BigDecimal.ZERO) < 0) {
+
+            throw new IllegalArgumentException(
+                    "O saldo final não pode ser negativo"
+            );
+        }
+
         Caixa caixa = caixaAberto.get();
+        BigDecimal saldoEsperado = calcularSaldoEsperado();
+        BigDecimal diferenca = saldoFinal.subtract(saldoEsperado);
+
+        caixa.setSaldoFinal(saldoFinal);
+        caixa.setDiferenca(diferenca);
 
         caixa.setAberto(false);
         caixa.setDataFechamento(LocalDateTime.now());

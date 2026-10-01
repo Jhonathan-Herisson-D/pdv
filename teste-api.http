@@ -613,3 +613,14 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/api/estoque/produtos/1/movimentacoes
+
+###
+GET http://localhost:8080/api/caixas/saldo-esperado
+
+###
+PUT http://localhost:8080/api/caixas/fechar
+Content-Type: application/json
+
+{
+  "saldoFinal": 340.00
+}

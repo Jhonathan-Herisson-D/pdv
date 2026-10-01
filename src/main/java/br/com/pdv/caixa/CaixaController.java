@@ -36,9 +36,11 @@ public class CaixaController {
     }
 
     @PutMapping("/fechar")
-    public ResponseEntity<Caixa> fecharCaixa() {
+    public ResponseEntity<Caixa> fecharCaixa(@RequestBody Map<String, BigDecimal> body) {
 
-        return caixaService.fecharCaixaAberto()
+        BigDecimal saldoFinal = body.get("saldoFinal");
+
+        return caixaService.fecharCaixaAberto(saldoFinal)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
