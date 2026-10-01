@@ -461,3 +461,15 @@ Content-Type: application/json
 
 ###
 PUT http://localhost:8080/api/vendas/4/cancelar
+
+###
+POST http://localhost:8080/api/estoque/produtos/1/entradas
+Content-Type: application/json
+
+{
+  "quantidade": 20,
+  "descricao": "Estoque inicial"
+}
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo
