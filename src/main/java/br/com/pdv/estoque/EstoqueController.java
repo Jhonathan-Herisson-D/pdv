@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -67,5 +68,31 @@ public class EstoqueController {
                 );
 
         return ResponseEntity.status(201).body(movimentacao);
+    }
+
+    @PostMapping("/produtos/{produtoId}/ajustes")
+    public ResponseEntity<MovimentacaoEstoque> registrarAjuste(
+            @PathVariable Long produtoId,
+            @RequestBody Map<String, Object> body) {
+
+        BigDecimal quantidade = new BigDecimal(body.get("quantidade").toString());
+
+        String descricao = body.get("descricao") != null ? body.get("descricao").toString() : null;
+
+        MovimentacaoEstoque movimentacao =
+                estoqueService.registrarAjuste(
+                        produtoId,
+                        quantidade,
+                        descricao
+                );
+
+        return ResponseEntity.status(201).body(movimentacao);
+    }
+
+    @GetMapping("/produtos/{produtoId}/movimentacoes")
+    public ResponseEntity<List<MovimentacaoEstoque>> listarMovimentacoes(
+            @PathVariable Long produtoId) {
+
+        return ResponseEntity.ok(estoqueService.listarMovimentacoes(produtoId));
     }
 }

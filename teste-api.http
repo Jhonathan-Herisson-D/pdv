@@ -580,3 +580,36 @@ PUT http://localhost:8080/api/vendas/8/finalizar
 
 ###
 GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+POST http://localhost:8080/api/estoque/produtos/1/ajustes
+Content-Type: application/json
+
+{
+  "quantidade": 2,
+  "descricao": "Ajuste após contagem física"
+}
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+POST http://localhost:8080/api/estoque/produtos/1/ajustes
+Content-Type: application/json
+
+{
+  "quantidade": -2,
+  "descricao": "Correção de inventário"
+}
+
+###
+POST http://localhost:8080/api/estoque/produtos/1/ajustes
+Content-Type: application/json
+
+{
+  "quantidade": -20,
+  "descricao": "Teste de ajuste inválido"
+}
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/movimentacoes
