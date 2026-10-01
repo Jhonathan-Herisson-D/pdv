@@ -624,3 +624,8 @@ Content-Type: application/json
 {
   "saldoFinal": 340.00
 }
+
+###
+GET http://localhost:8080/api/caixas/5/extrato
+
+

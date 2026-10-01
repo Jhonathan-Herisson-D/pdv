@@ -16,14 +16,42 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
            FROM Pagamento p
            WHERE p.venda.id = :vendaId
            """)
-    BigDecimal somarPagamentosPorVenda(@Param("vendaId") Long vendaId);
+    BigDecimal somarPagamentosPorVenda(
+            @Param("vendaId") Long vendaId
+    );
 
     @Query("""
            SELECT COALESCE(SUM(p.valor), 0)
-           FROM Pagamento p 
+           FROM Pagamento p
            WHERE p.venda.caixa.id = :caixaId
-             AND p.tipo = br.com.pdv.venda.TipoPagamento.DINHEIRO
+             AND p.tipo = :tipo
              AND p.venda.status = br.com.pdv.venda.StatusVenda.FINALIZADA
            """)
-    BigDecimal somarDinheiroPorCaixa(@Param("caixaId") Long caixaId);
+    BigDecimal somarPorCaixaETipo(
+            @Param("caixaId") Long caixaId,
+            @Param("tipo") TipoPagamento tipo
+    );
+
+    @Query("""
+           SELECT COUNT(DISTINCT p.venda.id)
+           FROM Pagamento p
+           WHERE p.venda.caixa.id = :caixaId
+             AND p.tipo = :tipo
+             AND p.venda.status = br.com.pdv.venda.StatusVenda.FINALIZADA
+           """)
+    Long contarPorCaixaETipo(
+            @Param("caixaId") Long caixaId,
+            @Param("tipo") TipoPagamento tipo
+    );
+
+    @Query("""
+           SELECT p
+           FROM Pagamento p
+           WHERE p.venda.caixa.id = :caixaId
+             AND p.venda.status = br.com.pdv.venda.StatusVenda.FINALIZADA
+           ORDER BY p.dataHora ASC
+           """)
+    List<Pagamento> buscarPagamentosPorCaixa(
+            @Param("caixaId") Long caixaId
+    );
 }

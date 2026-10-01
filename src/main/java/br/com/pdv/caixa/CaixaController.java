@@ -54,4 +54,13 @@ public class CaixaController {
                 Map.of("saldoEsperado", saldo)
         );
     }
+
+    @GetMapping("/{id}/extrato")
+    public ResponseEntity<ExtratoCaixa> extrato(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                caixaService.gerarExtrato(id)
+        );
+    }
 }

@@ -3,5 +3,6 @@ package br.com.pdv.venda;
 public enum TipoPagamento {
     DINHEIRO,
     PIX,
-    CARTAO
+    CARTAO_DEBITO,
+    CARTAO_CREDITO
 }
