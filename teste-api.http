@@ -473,3 +473,110 @@ Content-Type: application/json
 
 ###
 GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+POST http://localhost:8080/api/estoque/produtos/1/saidas
+Content-Type: application/json
+
+{
+  "quantidade": 3,
+  "descricao": "Teste de saída"
+}
+
+###
+POST http://localhost:8080/api/estoque/produtos/1/saidas
+Content-Type: application/json
+
+{
+  "quantidade": 18,
+  "descricao": "Teste estoque insuficiente"
+}
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+POST http://localhost:8080/api/vendas/6/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 2
+}
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+POST http://localhost:8080/api/vendas/6/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valorRecebido": 27.98
+}
+
+###
+PUT http://localhost:8080/api/vendas/6/finalizar
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+POST http://localhost:8080/api/vendas/7/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 16
+}
+
+###
+POST http://localhost:8080/api/vendas/7/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valorRecebido": 223.84
+}
+
+###
+PUT http://localhost:8080/api/vendas/7/finalizar
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+GET http://localhost:8080/api/estoque/produtos/4/saldo
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+POST http://localhost:8080/api/vendas/8/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 1,
+  "produtoId": 4,
+  "quantidade": 1
+}
+
+###
+POST http://localhost:8080/api/vendas/8/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valorRecebido": 13.55
+}
+
+###
+PUT http://localhost:8080/api/vendas/8/finalizar
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo

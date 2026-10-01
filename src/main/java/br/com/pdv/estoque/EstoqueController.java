@@ -49,4 +49,23 @@ public class EstoqueController {
                 )
         );
     }
+
+    @PostMapping("/produtos/{produtoId}/saidas")
+    public ResponseEntity<MovimentacaoEstoque> registrarSaida(
+            @PathVariable Long produtoId,
+            @RequestBody Map<String, Object> body) {
+
+        BigDecimal quantidade = new BigDecimal(body.get("quantidade").toString());
+
+        String descricao = body.get("descricao") != null ? body.get("descricao").toString() : null;
+
+        MovimentacaoEstoque movimentacao =
+                estoqueService.registrarSaida(
+                        produtoId,
+                        quantidade,
+                        descricao
+                );
+
+        return ResponseEntity.status(201).body(movimentacao);
+    }
 }

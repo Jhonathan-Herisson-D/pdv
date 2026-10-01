@@ -2,8 +2,10 @@ package br.com.pdv.venda;
 
 import br.com.pdv.caixa.Caixa;
 import br.com.pdv.caixa.CaixaRepository;
+import br.com.pdv.estoque.EstoqueService;
 import br.com.pdv.produto.Produto;
 import br.com.pdv.produto.ProdutoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,19 +21,22 @@ public class VendaService {
     private final ItemVendaRepository itemVendaRepository;
     private final ProdutoRepository produtoRepository;
     private final PagamentoRepository pagamentoRepository;
+    private final EstoqueService estoqueService;
 
     public VendaService(
             VendaRepository vendaRepository,
             CaixaRepository caixaRepository,
             ItemVendaRepository itemVendaRepository,
             ProdutoRepository produtoRepository,
-            PagamentoRepository pagamentoRepository) {
+            PagamentoRepository pagamentoRepository,
+            EstoqueService estoqueService) {
 
         this.vendaRepository = vendaRepository;
         this.caixaRepository = caixaRepository;
         this.itemVendaRepository = itemVendaRepository;
         this.produtoRepository = produtoRepository;
         this.pagamentoRepository = pagamentoRepository;
+        this.estoqueService = estoqueService;
 
     }
 
@@ -217,6 +222,7 @@ public class VendaService {
         vendaRepository.save(venda);
     }
 
+    @Transactional
     public Venda finalizarVenda(Long vendaId) {
 
         Venda venda = vendaRepository.findById(vendaId)
@@ -245,6 +251,31 @@ public class VendaService {
 
             throw new IllegalArgumentException(
                     "Pagamento insuficiente. Faltam R$ " + valorFaltante
+            );
+        }
+
+        List<ItemVenda> itens = itemVendaRepository.findByVendaIdOrderByIdAsc(vendaId);
+
+        for (ItemVenda item : itens) {
+
+            BigDecimal saldoAtual= estoqueService.consultarSaldo(item.getProduto().getId());
+
+            if (item.getQuantidade().compareTo(saldoAtual) > 0) {
+                throw new IllegalArgumentException(
+                        "Estoque insuficiente para o produto: "
+                                + item.getProduto().getNome()
+                                + ". Disponível: "
+                                +saldoAtual
+                );
+            }
+        }
+
+        for (ItemVenda item : itens) {
+
+            estoqueService.registrarSaida(
+                    item.getProduto().getId(),
+                    item.getQuantidade(),
+                    "Venda #" + venda.getId()
             );
         }
 

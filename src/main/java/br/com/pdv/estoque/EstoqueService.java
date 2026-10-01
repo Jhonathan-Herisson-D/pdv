@@ -50,6 +50,50 @@ public class EstoqueService {
         return movimentacaoEstoqueRepository.save(movimentacao);
     }
 
+    public MovimentacaoEstoque registrarSaida(
+            Long produtoId,
+            BigDecimal quantidade,
+            String descricao) {
+
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Produto não encontrado"
+                        )
+                );
+
+        if (quantidade == null ||
+                quantidade.compareTo(BigDecimal.ZERO) <= 0) {
+
+            throw new IllegalArgumentException(
+                    "A quantidade deve ser maior que zero"
+            );
+        }
+
+        BigDecimal saldoAtual =
+                movimentacaoEstoqueRepository.calcularSaldo(produtoId);
+
+        if (quantidade.compareTo(saldoAtual) > 0) {
+            throw new IllegalArgumentException(
+                    "Estoque insuficiente. Saldo disponível: "
+                            + saldoAtual
+            );
+        }
+
+        MovimentacaoEstoque movimentacao =
+                new MovimentacaoEstoque();
+
+        movimentacao.setProduto(produto);
+        movimentacao.setTipo(
+                TipoMovimentacaoEstoque.SAIDA
+        );
+        movimentacao.setQuantidade(quantidade);
+        movimentacao.setDescricao(descricao);
+        movimentacao.setDataHora(LocalDateTime.now());
+
+        return movimentacaoEstoqueRepository.save(movimentacao);
+    }
+
     public BigDecimal consultarSaldo(Long produtoId) {
 
         if (!produtoRepository.existsById(produtoId)) {
