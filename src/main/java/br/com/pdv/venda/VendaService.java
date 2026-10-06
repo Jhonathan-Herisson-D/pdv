@@ -303,4 +303,83 @@ public class VendaService {
 
         return vendaRepository.save(venda);
     }
+
+    public List<ResumoVenda> listarHistorico() {
+
+        return vendaRepository
+                .findAllByOrderByDataHoraDesc()
+                .stream()
+                .map(venda -> {
+
+                    ResumoVenda resumo = new ResumoVenda();
+
+                    resumo.setVendaId(venda.getId());
+                    resumo.setDataHora(venda.getDataHora());
+                    resumo.setStatus(venda.getStatus());
+                    resumo.setTotal(venda.getTotal());
+                    resumo.setCaixaId(venda.getCaixa().getId());
+
+                    return resumo;
+                })
+                .toList();
+    }
+
+    public DetalheVenda buscarDetalhe(Long vendaId) {
+
+        Venda venda = vendaRepository.findById(vendaId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Venda não encontrada")
+                );
+
+        List<ItemVenda> itens = itemVendaRepository.findByVendaIdOrderByIdAsc(vendaId);
+        List<DetalheItemVenda> detalheItens =
+                itens.stream()
+                        .map(item -> {
+                            DetalheItemVenda detalhe = new DetalheItemVenda();
+
+                            detalhe.setItemId(item.getId());
+                            detalhe.setProdutoId(item.getProduto().getId());
+                            detalhe.setProdutoNome(item.getProduto().getNome());
+                            detalhe.setQuantidade(item.getQuantidade());
+                            detalhe.setPrecoUnitario(item.getPrecoUnitario());
+                            detalhe.setSubtotal(item.getSubtotal());
+
+                            return detalhe;
+
+                        })
+                        .toList();
+
+        List<Pagamento> pagamentos = pagamentoRepository.findByVendaIdOrderByIdAsc(vendaId);
+
+        List<DetalhePagamentoVenda> detalhesPagamentos =
+                pagamentos.stream()
+                        .map(pagamento -> {
+
+                            DetalhePagamentoVenda detalhe =
+                                    new DetalhePagamentoVenda();
+
+                            detalhe.setPagamentoId(pagamento.getId());
+                            detalhe.setDataHora(pagamento.getDataHora());
+                            detalhe.setTipo(pagamento.getTipo());
+                            detalhe.setValor(pagamento.getValor());
+                            detalhe.setValorRecebido(pagamento.getValorRecebido());
+                            detalhe.setTroco(pagamento.getTroco());
+
+                            return detalhe;
+                        })
+                        .toList();
+
+        DetalheVenda detalheVenda = new DetalheVenda();
+
+        detalheVenda.setVendaId(venda.getId());
+        detalheVenda.setCaixaId(venda.getCaixa().getId());
+        detalheVenda.setDataHora(venda.getDataHora());
+        detalheVenda.setStatusVenda(venda.getStatus());
+        detalheVenda.setTotal(venda.getTotal());
+
+        detalheVenda.setItens(detalheItens);
+        detalheVenda.setPagamentos(detalhesPagamentos);
+
+        return detalheVenda;
+    }
 }

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -61,6 +62,14 @@ public class CaixaController {
 
         return ResponseEntity.ok(
                 caixaService.gerarExtrato(id)
+        );
+    }
+
+    @GetMapping("/historico")
+    public ResponseEntity<List<Caixa>> listarHistorico() {
+
+        return ResponseEntity.ok(
+                caixaService.listarHistorico()
         );
     }
 }

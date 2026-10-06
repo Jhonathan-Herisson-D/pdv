@@ -628,4 +628,14 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/api/caixas/5/extrato
 
+###
+GET http://localhost:8080/api/caixas/historico
 
+###
+GET /api/caixas/5/extrato
+
+###
+GET http://localhost:8080/api/vendas
+
+###
+GET http://localhost:8080/api/vendas/6

@@ -249,4 +249,8 @@ public class CaixaService {
 
         return extrato;
     }
+
+    public List<Caixa> listarHistorico() {
+        return caixaRepository.findAllByOrderByDataAberturaDesc();
+    }
 }

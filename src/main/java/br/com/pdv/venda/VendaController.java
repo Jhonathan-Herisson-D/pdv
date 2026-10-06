@@ -43,14 +43,6 @@ public class VendaController {
         return ResponseEntity.status(201).body(item);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Venda> buscarPorId(@PathVariable Long id) {
-
-        return vendaService.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping("/{vendaId}/itens")
     public ResponseEntity<List<ItemVenda>> listarItens(
             @PathVariable Long vendaId) {
@@ -101,5 +93,22 @@ public class VendaController {
         Venda venda = vendaService.cancelarVenda(id);
 
         return ResponseEntity.ok(venda);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResumoVenda>> listarHistorico() {
+
+        return ResponseEntity.ok(
+                vendaService.listarHistorico()
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DetalheVenda> buscarDetalhe(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                vendaService.buscarDetalhe(id)
+        );
     }
 }
