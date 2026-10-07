@@ -23,7 +23,8 @@ public class PagamentoService {
     public Pagamento registrar(
             Long vendaId,
             TipoPagamento tipo,
-            BigDecimal valorRecebido ) {
+            BigDecimal valor,
+            BigDecimal valorRecebido) {
 
         Venda venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() ->
@@ -38,15 +39,23 @@ public class PagamentoService {
             );
         }
 
-        if (valorRecebido == null || valorRecebido.compareTo(BigDecimal.ZERO) <= 0) {
+        if (tipo == null) {
+            throw new IllegalArgumentException(
+                    "O tipo de pagamento é obrigatório"
+            );
+        }
+
+        if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(
                     "O valor do pagamento deve ser maior que zero"
             );
         }
 
-        BigDecimal totalPago = pagamentoRepository.somarPagamentosPorVenda(vendaId);
+        BigDecimal totalPago =
+                pagamentoRepository.somarPagamentosPorVenda(vendaId);
 
-        BigDecimal valorRestante = venda.getTotal().subtract(totalPago);
+        BigDecimal valorRestante =
+                venda.getTotal().subtract(totalPago);
 
         if (valorRestante.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(
@@ -54,31 +63,37 @@ public class PagamentoService {
             );
         }
 
+        if (valor.compareTo(valorRestante) > 0) {
+            throw new IllegalArgumentException(
+                    "O pagamento não pode ser maior que o valor restante da venda"
+            );
+        }
+
         Pagamento pagamento = new Pagamento();
 
         pagamento.setVenda(venda);
         pagamento.setTipo(tipo);
+        pagamento.setValor(valor);
         pagamento.setDataHora(LocalDateTime.now());
 
         if (tipo == TipoPagamento.DINHEIRO) {
 
-            BigDecimal valorAplicado = valorRecebido.min(valorRestante);
+            if (valorRecebido == null ||
+                    valorRecebido.compareTo(valor) < 0) {
 
-            BigDecimal troco = valorRecebido.subtract(valorAplicado);
+                throw new IllegalArgumentException(
+                        "O valor recebido deve ser igual ou maior que o valor do pagamento"
+                );
+            }
 
-            pagamento.setValor(valorAplicado);
+            BigDecimal troco =
+                    valorRecebido.subtract(valor);
+
             pagamento.setValorRecebido(valorRecebido);
             pagamento.setTroco(troco);
 
         } else {
 
-            if (valorRecebido.compareTo(valorRestante) > 0) {
-                throw new IllegalArgumentException(
-                        "O pagamento não pode ser maior que o valor restante da venda"
-                );
-            }
-
-            pagamento.setValor(valorRecebido);
             pagamento.setValorRecebido(null);
             pagamento.setTroco(null);
         }

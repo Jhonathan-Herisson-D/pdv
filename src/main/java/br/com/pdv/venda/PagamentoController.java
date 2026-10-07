@@ -1,6 +1,5 @@
 package br.com.pdv.venda;
 
-import jdk.dynalink.linker.LinkerServices;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +22,32 @@ public class PagamentoController {
             @PathVariable Long vendaId,
             @RequestBody Map<String, Object> body) {
 
-        TipoPagamento tipo = TipoPagamento.valueOf(body.get("tipo").toString());
-        BigDecimal valorRecebido  = new  BigDecimal(body.get("valorRecebido").toString());
-        Pagamento pagamento = pagamentoService.registrar(
-                vendaId,
-                tipo,
-                valorRecebido
-        );
+        TipoPagamento tipo =
+                TipoPagamento.valueOf(
+                        body.get("tipo").toString()
+                );
+
+        BigDecimal valor =
+                new BigDecimal(
+                        body.get("valor").toString()
+                );
+
+        BigDecimal valorRecebido = null;
+
+        if (body.get("valorRecebido") != null) {
+            valorRecebido =
+                    new BigDecimal(
+                            body.get("valorRecebido").toString()
+                    );
+        }
+
+        Pagamento pagamento =
+                pagamentoService.registrar(
+                        vendaId,
+                        tipo,
+                        valor,
+                        valorRecebido
+                );
 
         return ResponseEntity.status(201).body(pagamento);
     }

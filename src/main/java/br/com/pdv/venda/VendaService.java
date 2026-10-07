@@ -5,7 +5,7 @@ import br.com.pdv.caixa.CaixaRepository;
 import br.com.pdv.estoque.EstoqueService;
 import br.com.pdv.produto.Produto;
 import br.com.pdv.produto.ProdutoRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -284,6 +284,7 @@ public class VendaService {
         return vendaRepository.save(venda);
     }
 
+    @Transactional
     public Venda cancelarVenda(Long vendaId) {
 
         Venda venda = vendaRepository.findById(vendaId)
@@ -293,12 +294,34 @@ public class VendaService {
                         )
                 );
 
-        if (venda.getStatus() != StatusVenda.ABERTA) {
+        // Uma venda já cancelada não pode ser cancelada novamente
+        if (venda.getStatus() == StatusVenda.CANCELADA) {
             throw new IllegalArgumentException(
-                    "Só é possível cancelar uma venda aberta"
+                    "A venda já está cancelada"
             );
         }
 
+        if (venda.getStatus() == StatusVenda.FINALIZADA) {
+            throw new IllegalArgumentException(
+                    "Cancelamento de venda finalizada exige estorno financeiro"
+            );
+        }
+
+        // Se a venda já foi finalizada, o estoque já foi baixado
+        // Portanto, precisamos devolver od produtos ao estoque
+        if (venda.getStatus() == StatusVenda.FINALIZADA) {
+
+            List<ItemVenda> itens = itemVendaRepository.findByVendaIdOrderByIdAsc(vendaId);
+
+            for (ItemVenda item : itens) {
+
+                estoqueService.registrarEntrada(
+                        item.getProduto().getId(),
+                        item.getQuantidade(),
+                        "Cancelamento da venda #" + vendaId
+                );
+            }
+        }
         venda.setStatus(StatusVenda.CANCELADA);
 
         return vendaRepository.save(venda);

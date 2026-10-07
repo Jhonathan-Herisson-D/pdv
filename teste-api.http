@@ -639,3 +639,107 @@ GET http://localhost:8080/api/vendas
 
 ###
 GET http://localhost:8080/api/vendas/6
+
+###
+PUT http://localhost:8080/api/vendas/8/cancelar
+
+###
+POST http://localhost:8080/api/caixas/abrir
+Content-Type: application/json
+
+{
+  "saldoInicial": 200.00
+}
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+POST http://localhost:8080/api/vendas/9/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 2
+}
+
+###
+POST http://localhost:8080/api/vendas/9/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valor": 27.98
+}
+
+###
+PUT http://localhost:8080/api/vendas/9/finalizar
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+PUT http://localhost:8080/api/vendas/9/cancelar
+
+###
+GET http://localhost:8080/api/estoque/produtos/1/saldo
+
+###
+GET http://localhost:8080/api/vendas/6
+
+###
+GET http://localhost:8080/api/caixas/6/extrato
+
+###
+POST http://localhost:8080/api/vendas
+Content-Type: application/json
+
+{
+  "caixaId": 6
+}
+
+###
+POST http://localhost:8080/api/vendas/10/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 2
+}
+
+###
+POST http://localhost:8080/api/vendas/10/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valor": 27.98
+}
+
+###
+PUT http://localhost:8080/api/vendas/10/finalizar
+
+###
+POST http://localhost:8080/api/estornos/pagamentos/9
+Content-Type: application/json
+
+{
+  "motivo": "Teste de estorno integral do PDV"
+}
+
+###
+POST http://localhost:8080/api/estornos/pagamentos/9
+Content-Type: application/json
+
+{
+  "motivo": "Teste de estorno duplicado"
+}
+
+###
+PUT http://localhost:8080/api/estornos/1/concluir
+
+###
+GET http://localhost:8080/api/caixas/6/extrato
