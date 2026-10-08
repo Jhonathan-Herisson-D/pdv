@@ -15,12 +15,20 @@ public class ExtratoCaixa {
     // Resumo financeiro
     private Long quantidadeDinheiro;
     private BigDecimal totalDinheiro;
+    private BigDecimal totalEstornosDinheiro;
+    private BigDecimal totalDinheiroLiquido;
     private Long quantidadePix;
     private BigDecimal totalPix;
+    private BigDecimal totalEstornosPix;
+    private BigDecimal totalPixLiquido;
     private Long quantidadeCartaoDebito;
     private BigDecimal totalCartaoDebito;
+    private BigDecimal totalEstornosDebito;
+    private BigDecimal totalDebitoLiquido;
     private Long quantidadeCartaoCredito;
     private BigDecimal totalCartaoCredito;
+    private BigDecimal totalEstornosCredito;
+    private BigDecimal totalCreditoLiquido;
     private BigDecimal totalVendas;
 
     // Conferência do dinheiro físico
@@ -82,6 +90,22 @@ public class ExtratoCaixa {
         this.totalDinheiro = totalDinheiro;
     }
 
+    public BigDecimal getTotalEstornosDinheiro() {
+        return totalEstornosDinheiro;
+    }
+
+    public void setTotalEstornosDinheiro(BigDecimal totalEstornosDinheiro) {
+        this.totalEstornosDinheiro = totalEstornosDinheiro;
+    }
+
+    public BigDecimal getTotalDinheiroLiquido() {
+        return totalDinheiroLiquido;
+    }
+
+    public void setTotalDinheiroLiquido(BigDecimal totalDinheiroLiquido) {
+        this.totalDinheiroLiquido = totalDinheiroLiquido;
+    }
+
     public Long getQuantidadePix() {
         return quantidadePix;
     }
@@ -96,6 +120,22 @@ public class ExtratoCaixa {
 
     public void setTotalPix(BigDecimal totalPix) {
         this.totalPix = totalPix;
+    }
+
+    public BigDecimal getTotalEstornosPix() {
+        return totalEstornosPix;
+    }
+
+    public void setTotalEstornosPix(BigDecimal totalEstornosPix) {
+        this.totalEstornosPix = totalEstornosPix;
+    }
+
+    public BigDecimal getTotalPixLiquido() {
+        return totalPixLiquido;
+    }
+
+    public void setTotalPixLiquido(BigDecimal totalPixLiquido) {
+        this.totalPixLiquido = totalPixLiquido;
     }
 
     public Long getQuantidadeCartaoDebito() {
@@ -114,6 +154,22 @@ public class ExtratoCaixa {
         this.totalCartaoDebito = totalCartaoDebito;
     }
 
+    public BigDecimal getTotalEstornosDebito() {
+        return totalEstornosDebito;
+    }
+
+    public void setTotalEstornosDebito(BigDecimal totalEstornosDebito) {
+        this.totalEstornosDebito = totalEstornosDebito;
+    }
+
+    public BigDecimal getTotalDebitoLiquido() {
+        return totalDebitoLiquido;
+    }
+
+    public void setTotalDebitoLiquido(BigDecimal totalDebitoLiquido) {
+        this.totalDebitoLiquido = totalDebitoLiquido;
+    }
+
     public Long getQuantidadeCartaoCredito() {
         return quantidadeCartaoCredito;
     }
@@ -128,6 +184,22 @@ public class ExtratoCaixa {
 
     public void setTotalCartaoCredito(BigDecimal totalCartaoCredito) {
         this.totalCartaoCredito = totalCartaoCredito;
+    }
+
+    public BigDecimal getTotalEstornosCredito() {
+        return totalEstornosCredito;
+    }
+
+    public void setTotalEstornosCredito(BigDecimal totalEstornosCredito) {
+        this.totalEstornosCredito = totalEstornosCredito;
+    }
+
+    public BigDecimal getTotalCreditoLiquido() {
+        return totalCreditoLiquido;
+    }
+
+    public void setTotalCreditoLiquido(BigDecimal totalCreditoLiquido) {
+        this.totalCreditoLiquido = totalCreditoLiquido;
     }
 
     public BigDecimal getTotalVendas() {

@@ -1,5 +1,6 @@
 package br.com.pdv.caixa;
 
+import br.com.pdv.venda.EstornoPagamentoRepository;
 import br.com.pdv.venda.Pagamento;
 import br.com.pdv.venda.PagamentoRepository;
 import br.com.pdv.venda.TipoPagamento;
@@ -16,15 +17,18 @@ public class CaixaService {
     private final CaixaRepository caixaRepository;
     private final MovimentacaoCaixaRepository movimentacaoCaixaRepository;
     private final PagamentoRepository pagamentoRepository;
+    private final EstornoPagamentoRepository estornoPagamentoRepository;
 
     public CaixaService(
             CaixaRepository caixaRepository,
             MovimentacaoCaixaRepository movimentacaoCaixaRepository,
-            PagamentoRepository pagamentoRepository) {
+            PagamentoRepository pagamentoRepository,
+            EstornoPagamentoRepository estornoPagamentoRepository) {
 
         this.caixaRepository = caixaRepository;
         this.movimentacaoCaixaRepository = movimentacaoCaixaRepository;
         this.pagamentoRepository = pagamentoRepository;
+        this.estornoPagamentoRepository = estornoPagamentoRepository;
     }
 
     public Caixa abrir(BigDecimal saldoInicial) {
@@ -124,11 +128,29 @@ public class CaixaService {
                         TipoPagamento.DINHEIRO
                 );
 
+        BigDecimal totalEstornoDinheiro =
+                estornoPagamentoRepository.somarEstornosConcluidosPorCaixaETipo(
+                        caixaId,
+                        TipoPagamento.DINHEIRO
+                );
+
+        BigDecimal totalDinheiroLiquido =
+                totalDinheiro.subtract(totalEstornoDinheiro);
+
         BigDecimal totalPix =
                 pagamentoRepository.somarPorCaixaETipo(
                         caixaId,
                         TipoPagamento.PIX
                 );
+
+        BigDecimal totalEstornoPix =
+                estornoPagamentoRepository.somarEstornosConcluidosPorCaixaETipo(
+                        caixaId,
+                        TipoPagamento.PIX
+                );
+
+        BigDecimal totalPixLiquido =
+                totalPix.subtract(totalEstornoPix);
 
         BigDecimal totalDebito =
                 pagamentoRepository.somarPorCaixaETipo(
@@ -136,11 +158,29 @@ public class CaixaService {
                         TipoPagamento.CARTAO_DEBITO
                 );
 
+        BigDecimal totalEstornosDebito =
+                estornoPagamentoRepository.somarEstornosConcluidosPorCaixaETipo(
+                        caixaId,
+                        TipoPagamento.CARTAO_DEBITO
+                );
+
+        BigDecimal totalDebitoLiquido =
+                totalDebito.subtract(totalEstornosDebito);
+
         BigDecimal totalCredito =
                 pagamentoRepository.somarPorCaixaETipo(
                         caixaId,
                         TipoPagamento.CARTAO_CREDITO
                 );
+
+        BigDecimal totalEstornosCredito =
+                estornoPagamentoRepository.somarEstornosConcluidosPorCaixaETipo(
+                        caixaId,
+                        TipoPagamento.CARTAO_CREDITO
+                );
+
+        BigDecimal totalCreditoLiquido =
+                totalCredito.subtract(totalEstornosCredito);
 
         // Quantidade de pagamento por forma
         Long quantidadeDinheiro  =
@@ -226,15 +266,23 @@ public class CaixaService {
 
         extrato.setQuantidadeDinheiro(quantidadeDinheiro);
         extrato.setTotalDinheiro(totalDinheiro);
+        extrato.setTotalEstornosDinheiro(totalEstornoDinheiro);
+        extrato.setTotalDinheiroLiquido(totalDinheiroLiquido);
 
         extrato.setQuantidadePix(quantidadePix);
         extrato.setTotalPix(totalPix);
+        extrato.setTotalEstornosPix(totalEstornoPix);
+        extrato.setTotalPixLiquido(totalPixLiquido);
 
         extrato.setQuantidadeCartaoDebito(quantidadeDebito);
         extrato.setTotalCartaoDebito(totalDebito);
+        extrato.setTotalEstornosDebito(totalEstornosDebito);
+        extrato.setTotalDebitoLiquido(totalDebitoLiquido);
 
         extrato.setQuantidadeCartaoCredito(quantidadeCredito);
         extrato.setTotalCartaoCredito(totalCredito);
+        extrato.setTotalEstornosCredito(totalEstornosCredito);
+        extrato.setTotalCreditoLiquido(totalCreditoLiquido);
 
         extrato.setTotalVendas(totalVendas);
 
