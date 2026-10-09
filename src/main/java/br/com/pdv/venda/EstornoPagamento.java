@@ -1,5 +1,6 @@
 package br.com.pdv.venda;
 
+import br.com.pdv.caixa.Caixa;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -22,6 +23,10 @@ public class EstornoPagamento {
     )
     private Pagamento pagamento;
 
+    @ManyToOne
+    @JoinColumn(name = "caixa_estorno_id")
+    private Caixa caixaEstorno;
+
     @Column(nullable = false,precision = 10, scale = 2)
     private BigDecimal valor;
 
@@ -36,6 +41,14 @@ public class EstornoPagamento {
 
     @Column(length = 500)
     private String motivo;
+
+    public Caixa getCaixaEstorno() {
+        return caixaEstorno;
+    }
+
+    public void setCaixaEstorno(Caixa caixaEstorno) {
+        this.caixaEstorno = caixaEstorno;
+    }
 
     public Long getId() {
         return id;

@@ -743,3 +743,41 @@ PUT http://localhost:8080/api/estornos/1/concluir
 
 ###
 GET http://localhost:8080/api/caixas/6/extrato
+
+###
+POST http://localhost:8080/api/vendas
+
+###
+POST http://localhost:8080/api/vendas/11/itens
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "quantidade": 2
+}
+
+###
+POST http://localhost:8080/api/vendas/11/pagamentos
+Content-Type: application/json
+
+{
+  "tipo": "PIX",
+  "valor": 27.98
+}
+
+###
+PUT http://localhost:8080/api/vendas/11/finalizar
+
+###
+POST http://localhost:8080/api/estornos/pagamentos/10
+Content-Type: application/json
+
+{
+  "motivo": "Teste de estorno vinculado ao caixa responsável"
+}
+
+###
+PUT http://localhost:8080/api/estornos/2/concluir?caixaId=6
+
+###
+GET http://localhost:8080/api/caixas/6/extrato

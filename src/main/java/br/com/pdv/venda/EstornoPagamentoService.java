@@ -1,5 +1,7 @@
 package br.com.pdv.venda;
 
+import br.com.pdv.caixa.Caixa;
+import br.com.pdv.caixa.CaixaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,10 +12,12 @@ public class EstornoPagamentoService {
 
     private final EstornoPagamentoRepository estornoRepository;
     private final PagamentoRepository pagamentoRepository;
+    private final CaixaRepository caixaRepository;
 
-    public EstornoPagamentoService(EstornoPagamentoRepository estornoRepository, PagamentoRepository pagamentoRepository) {
+    public EstornoPagamentoService(EstornoPagamentoRepository estornoRepository, PagamentoRepository pagamentoRepository, CaixaRepository caixaRepository) {
         this.estornoRepository = estornoRepository;
         this.pagamentoRepository = pagamentoRepository;
+        this.caixaRepository = caixaRepository;
     }
 
     @Transactional
@@ -50,7 +54,7 @@ public class EstornoPagamentoService {
     }
 
     @Transactional
-    public EstornoPagamento concluirEstorno(Long estornoId) {
+    public EstornoPagamento concluirEstorno(Long estornoId, Long caixaId) {
 
         EstornoPagamento estorno = estornoRepository.findById(estornoId)
                 .orElseThrow(() ->
@@ -60,6 +64,17 @@ public class EstornoPagamentoService {
             throw new IllegalArgumentException("Este estorno já foi concluido");
         }
 
+        Caixa caixa = caixaRepository.findById(caixaId)
+                        .orElseThrow(() ->
+                                new IllegalArgumentException("Caixa não encontrado"));
+
+        if (!Boolean.TRUE.equals(caixa.getAberto())) {
+            throw new IllegalArgumentException(
+                    "Não é possível concluir estorno em um caixa fechado"
+            );
+        }
+
+        estorno.setCaixaEstorno(caixa);
         estorno.setStatus(StatusEstorno.CONCLUIDO);
         estorno.setDataConclusao(LocalDateTime.now());
 

@@ -13,7 +13,7 @@ public interface EstornoPagamentoRepository extends JpaRepository<EstornoPagamen
     @Query("""
             SELECT COALESCE(SUM(e.valor), 0)
             FROM EstornoPagamento  e
-            WHERE e.pagamento.venda.caixa.id = :caixaId
+            WHERE e.caixaEstorno.id = :caixaId
               AND e.pagamento.tipo = :tipo
               AND e.status = br.com.pdv.venda.StatusEstorno.CONCLUIDO
            """)
@@ -21,5 +21,7 @@ public interface EstornoPagamentoRepository extends JpaRepository<EstornoPagamen
             @Param("caixaId") Long caixaId,
             @Param("tipo") TipoPagamento tipo
     );
+
+    Long countByStatusAndCaixaEstornoIsNull(StatusEstorno status);
 
 }

@@ -30,9 +30,10 @@ public class EstornoPagamentoController {
 
     @PutMapping("/{estornoId}/concluir")
     public ResponseEntity<EstornoPagamento> concluir(
-            @PathVariable Long estornoId) {
+            @PathVariable Long estornoId,
+            @RequestParam Long caixaId) {
 
-        EstornoPagamento estorno = estornoService.concluirEstorno(estornoId);
+        EstornoPagamento estorno = estornoService.concluirEstorno(estornoId, caixaId);
 
         return ResponseEntity.ok(estorno);
     }
