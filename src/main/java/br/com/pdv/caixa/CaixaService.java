@@ -229,11 +229,13 @@ public class CaixaService {
 
         // Saldo físico esperado na gaveta.
         // PIX, débito e crédito não entram no dinheiro físico.
+        // Estornos concluídos em dinheiro reduzem o saldo
         BigDecimal saldoEsperado =
                 caixa.getSaldoInicial()
                         .add(suprimentos)
                         .add(totalDinheiro)
-                        .subtract(sangrias);
+                        .subtract(sangrias)
+                        .subtract(totalEstornoDinheiro);
 
         //Busca os pagamentos para montar os detalhes do extrato
         List<Pagamento> pagamentos =
