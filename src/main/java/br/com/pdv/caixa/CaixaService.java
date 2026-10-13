@@ -107,11 +107,18 @@ public class CaixaService {
                         caixa.getId(),
                         TipoPagamento.DINHEIRO);
 
+        BigDecimal totalEstornosDinheiro =
+                estornoPagamentoRepository.somarEstornosConcluidosPorCaixaETipo(
+                        caixa.getId(),
+                        TipoPagamento.DINHEIRO
+                );
+
 
         return caixa.getSaldoInicial()
                 .add(suprimento)
                 .add(totalDinheiro)
-                .subtract(sangrias);
+                .subtract(sangrias)
+                .subtract(totalEstornosDinheiro);
     }
 
     public ExtratoCaixa gerarExtrato(Long caixaId) {
