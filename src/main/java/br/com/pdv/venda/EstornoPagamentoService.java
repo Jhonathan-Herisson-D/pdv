@@ -80,4 +80,11 @@ public class EstornoPagamentoService {
 
         return estornoRepository.save(estorno);
     }
+
+    @Transactional(readOnly = true)
+    public long contarEstornosPendentesConciliacao() {
+        return estornoRepository.countByStatusAndCaixaEstornoIsNull(
+                StatusEstorno.CONCLUIDO
+        );
+    }
 }

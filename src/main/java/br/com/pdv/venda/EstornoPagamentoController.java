@@ -37,4 +37,12 @@ public class EstornoPagamentoController {
 
         return ResponseEntity.ok(estorno);
     }
+
+    @GetMapping("/pendentes-conciliacao")
+    public ResponseEntity<Map<String, Long>> contarPendentesConcilicao() {
+
+        long quantidade = estornoService.contarEstornosPendentesConciliacao();
+
+        return ResponseEntity.ok(Map.of("quantidade", quantidade));
+    }
 }
