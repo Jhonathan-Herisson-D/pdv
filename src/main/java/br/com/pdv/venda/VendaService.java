@@ -324,14 +324,8 @@ public class VendaService {
                                         + " ainda não possui estorno"
                         ));
 
-                if (estorno.getCaixaEstorno() == null) {
-                    throw new IllegalArgumentException(
-                            "O estorno do pagamento #"
-                                    + pagamento.getId()
-                                    + " está sem caixa de devolução e exige conciliação"
-                    );
-                }
 
+                // 1. Verificar se o estorno foi concluído
                 if (estorno.getStatus() != StatusEstorno.CONCLUIDO) {
                     throw new IllegalArgumentException(
                             "O estorno do pagamento #"
@@ -340,12 +334,23 @@ public class VendaService {
                     );
                 }
 
+                // 2. Verificar se o valor foi integralmente estornado
                 if (estorno.getValor().compareTo(pagamento.getValor()) != 0) {
                     throw new IllegalArgumentException(
                             "O pagamento #" + pagamento.getId()
                                     + " não foi integralmente estornado"
                     );
                 }
+
+                // 3. Verificar se existe caixa de devolução
+                if (estorno.getCaixaEstorno() == null) {
+                    throw new IllegalArgumentException(
+                            "O estorno do pagamento #"
+                                    + pagamento.getId()
+                                    + " está sem caixa de devolução e exige conciliação"
+                    );
+                }
+
             }
 
 
