@@ -22,6 +22,7 @@ public class VendaService {
     private final ProdutoRepository produtoRepository;
     private final PagamentoRepository pagamentoRepository;
     private final EstoqueService estoqueService;
+    private final EstornoPagamentoRepository estornoPagamentoRepository;
 
     public VendaService(
             VendaRepository vendaRepository,
@@ -29,7 +30,8 @@ public class VendaService {
             ItemVendaRepository itemVendaRepository,
             ProdutoRepository produtoRepository,
             PagamentoRepository pagamentoRepository,
-            EstoqueService estoqueService) {
+            EstoqueService estoqueService,
+            EstornoPagamentoRepository estornoPagamentoRepository) {
 
         this.vendaRepository = vendaRepository;
         this.caixaRepository = caixaRepository;
@@ -37,6 +39,7 @@ public class VendaService {
         this.produtoRepository = produtoRepository;
         this.pagamentoRepository = pagamentoRepository;
         this.estoqueService = estoqueService;
+        this.estornoPagamentoRepository = estornoPagamentoRepository;
 
     }
 
@@ -302,26 +305,63 @@ public class VendaService {
         }
 
         if (venda.getStatus() == StatusVenda.FINALIZADA) {
-            throw new IllegalArgumentException(
-                    "Cancelamento de venda finalizada exige estorno financeiro"
-            );
-        }
 
-        // Se a venda já foi finalizada, o estoque já foi baixado
-        // Portanto, precisamos devolver od produtos ao estoque
-        if (venda.getStatus() == StatusVenda.FINALIZADA) {
+            List<Pagamento> pagamentos =
+                    pagamentoRepository.findByVendaIdOrderByIdAsc(vendaId);
 
-            List<ItemVenda> itens = itemVendaRepository.findByVendaIdOrderByIdAsc(vendaId);
+            if (pagamentos.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Venda finalizada sem pagamentos. Cancelamento exige análise."
+                );
+            }
+
+            for (Pagamento pagamento : pagamentos) {
+
+                EstornoPagamento estorno = estornoPagamentoRepository
+                        .findByPagamentoId(pagamento.getId())
+                        .orElseThrow(() -> new IllegalArgumentException(
+                                "O pagamento #" + pagamento.getId()
+                                        + " ainda não possui estorno"
+                        ));
+
+                if (estorno.getCaixaEstorno() == null) {
+                    throw new IllegalArgumentException(
+                            "O estorno do pagamento #"
+                                    + pagamento.getId()
+                                    + " está sem caixa de devolução e exige conciliação"
+                    );
+                }
+
+                if (estorno.getStatus() != StatusEstorno.CONCLUIDO) {
+                    throw new IllegalArgumentException(
+                            "O estorno do pagamento #"
+                                    + pagamento.getId()
+                                    + " ainda não foi concluído"
+                    );
+                }
+
+                if (estorno.getValor().compareTo(pagamento.getValor()) != 0) {
+                    throw new IllegalArgumentException(
+                            "O pagamento #" + pagamento.getId()
+                                    + " não foi integralmente estornado"
+                    );
+                }
+            }
+
+
+            List<ItemVenda> itens =
+                    itemVendaRepository.findByVendaIdOrderByIdAsc(vendaId);
 
             for (ItemVenda item : itens) {
 
                 estoqueService.registrarEntrada(
                         item.getProduto().getId(),
                         item.getQuantidade(),
-                        "Cancelamento da venda #" + vendaId
+                        "Devolução ao estoque pelo cancelamento da venda #" + vendaId
                 );
             }
         }
+
         venda.setStatus(StatusVenda.CANCELADA);
 
         return vendaRepository.save(venda);

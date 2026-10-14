@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface EstornoPagamentoRepository extends JpaRepository<EstornoPagamento, Long> {
 
@@ -23,5 +24,7 @@ public interface EstornoPagamentoRepository extends JpaRepository<EstornoPagamen
     );
 
     Long countByStatusAndCaixaEstornoIsNull(StatusEstorno status);
+
+    Optional<EstornoPagamento> findByPagamentoId(Long pagamentoId);
 
 }

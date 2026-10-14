@@ -21,36 +21,45 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
     );
 
     @Query("""
-           SELECT COALESCE(SUM(p.valor), 0)
-           FROM Pagamento p
-           WHERE p.venda.caixa.id = :caixaId
-             AND p.tipo = :tipo
-             AND p.venda.status = br.com.pdv.venda.StatusVenda.FINALIZADA
-           """)
+       SELECT COALESCE(SUM(p.valor), 0)
+       FROM Pagamento p
+       WHERE p.venda.caixa.id = :caixaId
+         AND p.tipo = :tipo
+         AND p.venda.status IN (
+             br.com.pdv.venda.StatusVenda.FINALIZADA,
+             br.com.pdv.venda.StatusVenda.CANCELADA
+         )
+       """)
     BigDecimal somarPorCaixaETipo(
             @Param("caixaId") Long caixaId,
             @Param("tipo") TipoPagamento tipo
     );
 
     @Query("""
-           SELECT COUNT(DISTINCT p.venda.id)
-           FROM Pagamento p
-           WHERE p.venda.caixa.id = :caixaId
-             AND p.tipo = :tipo
-             AND p.venda.status = br.com.pdv.venda.StatusVenda.FINALIZADA
-           """)
+       SELECT COUNT(DISTINCT p.venda.id)
+       FROM Pagamento p
+       WHERE p.venda.caixa.id = :caixaId
+         AND p.tipo = :tipo
+         AND p.venda.status IN (
+             br.com.pdv.venda.StatusVenda.FINALIZADA,
+             br.com.pdv.venda.StatusVenda.CANCELADA
+         )
+       """)
     Long contarPorCaixaETipo(
             @Param("caixaId") Long caixaId,
             @Param("tipo") TipoPagamento tipo
     );
 
     @Query("""
-           SELECT p
-           FROM Pagamento p
-           WHERE p.venda.caixa.id = :caixaId
-             AND p.venda.status = br.com.pdv.venda.StatusVenda.FINALIZADA
-           ORDER BY p.dataHora ASC
-           """)
+       SELECT p
+       FROM Pagamento p
+       WHERE p.venda.caixa.id = :caixaId
+         AND p.venda.status IN (
+             br.com.pdv.venda.StatusVenda.FINALIZADA,
+             br.com.pdv.venda.StatusVenda.CANCELADA
+         )
+       ORDER BY p.dataHora ASC
+       """)
     List<Pagamento> buscarPagamentosPorCaixa(
             @Param("caixaId") Long caixaId
     );
