@@ -781,3 +781,64 @@ PUT http://localhost:8080/api/estornos/2/concluir?caixaId=6
 
 ###
 GET http://localhost:8080/api/caixas/6/extrato
+
+###
+GET http://localhost:8080/api/estornos/pendentes-conciliacao
+
+###
+GET http://localhost:8080/api/caixas/6/extrato
+
+###
+POST http://localhost:8080/api/estornos/pagamentos/3
+Content-Type: application/json
+
+{
+  "motivo": "Teste de estorno em dinheiro para validar saldo do caixa"
+}
+
+###
+PUT http://localhost:8080/api/estornos/3/concluir?caixaId=6
+
+###
+GET http://localhost:8080/api/caixas/6/extrato
+
+###
+GET http://localhost:8080/api/caixas/saldo-esperado
+
+### TESTE - Consultar vendas antes do cancelamento
+GET http://localhost:8080/api/vendas
+
+### TESTE - Consultar pagamentos da venda 11
+GET http://localhost:8080/api/vendas/11/pagamentos
+
+### TESTE - Bloqueio de cancelamento da venda 11
+PUT http://localhost:8080/api/vendas/11/cancelar
+
+### TESTE - Consultar pagamentos da venda 10
+GET http://localhost:8080/api/vendas/10/pagamentos
+
+### TESTE - Bloquear cancelamento sem conciliação
+PUT http://localhost:8080/api/vendas/10/cancelar
+
+### TESTE - Saldo esperado após cancelamento
+GET http://localhost:8080/api/caixas/saldo-esperado
+
+### TESTE - Extrato financeiro do caixa 6
+GET http://localhost:8080/api/caixas/6/extrato
+
+### TESTE - Impedir cancelamento duplicado
+PUT http://localhost:8080/api/vendas/11/cancelar
+
+### TESTE - Bloquear cancelamento sem estorno
+PUT http://localhost:8080/api/vendas/6/cancelar
+
+### TESTE - Criar estorno pendente do pagamento 5
+POST http://localhost:8080/api/estornos/pagamentos/5
+Content-Type: application/json
+
+{
+  "motivo": "Teste de bloqueio de cancelamento com estorno pendente"
+}
+
+### TESTE - Bloquear cancelamento com estorno pendente
+PUT http://localhost:8080/api/vendas/6/cancelar
