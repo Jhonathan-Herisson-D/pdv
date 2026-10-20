@@ -1,0 +1,54 @@
+
+main {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h1 {
+  color: #17365d;
+  font-size: 36px;
+}
+
+h2 {
+  color: #333333;
+}
+
+button {
+  background-color: #1769aa;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #104e80;
+}
+
+
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 30px 0;
+}
+
+nav button {
+  min-width: 130px;
+}
+
+section {
+  margin-top: 30px;
+  padding: 25px;
+  background-color: #f4f7fb;
+  border-radius: 10px;
+}
+
