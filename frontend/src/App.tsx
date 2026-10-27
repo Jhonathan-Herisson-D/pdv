@@ -20,8 +20,20 @@ function App() {
     // Armazena os produtos recebidos do backend
     const [produtos, setProdutos] = useState<Produto[]>([])
 
+    // Guarda o texto digitado na pesquisa
+    const [pesquisa, setPesquisa] = useState('')
+
     // Armazena possíveis erros na consulta
     const [erro, setErro] = useState('')
+
+    // Controla a exibição do formulário de cadastro
+    const [mostrarCadastro, setMostrarCadastro] = useState(false)
+
+    // Dados digitados no formulário de cadastro
+    const [nomeProduto, setNomeProduto] = useState('')
+    const [codigoProduto, setCodigoProduto] = useState('')
+    const [gtinProduto, setGtinProduto] = useState('')
+    const [precoProduto, setPrecoProduto] = useState('')
 
     // Executa a consulta quando a aplicação é iniciada
     useEffect(() => {
@@ -43,6 +55,65 @@ function App() {
 
         carregarProdutos()
     }, [])
+
+    // Filtra os produtos pelo nome, ignorando maiúsculas e minúsculas
+    const produtosFiltrados = produtos.filter((produto) =>
+        produto.nome.toLowerCase().includes(pesquisa.toLowerCase())
+    )
+
+    async function cadastrarProduto() {
+        try {
+            const resposta = await fetch('/api/produtos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome: nomeProduto,
+                    codigoInterno: codigoProduto,
+                    gtin: gtinProduto || null,
+                    precoVenda: Number(precoProduto),
+                    ativo: true,
+                }),
+            })
+
+            if (!resposta.ok) {
+                if (resposta.status === 400) {
+                    throw new Error('Dados inválidos. Verifique os campos do produto.')
+                }
+
+                if (resposta.status === 409) {
+                    throw new Error('Já existe um produto com esse código ou GTIN.')
+                }
+
+                throw new Error('Não foi possível cadastrar o produto.')
+            }
+
+            const produtoSalvo: Produto = await resposta.json()
+
+            // Atualiza a tabela sem recarregar a página
+            setProdutos((anteriores) => [...anteriores, produtoSalvo])
+
+            // Limpa os campos do formulário
+            setNomeProduto('')
+            setCodigoProduto('')
+            setGtinProduto('')
+            setPrecoProduto('')
+
+            // Fecha o formulário
+            setMostrarCadastro(false)
+
+            alert('Produto cadastrado com sucesso!')
+        } catch (erro) {
+            console.error(erro)
+
+            if (erro instanceof Error) {
+                alert(erro.message)
+            } else {
+                alert('Ocorreu um erro inesperado.')
+            }
+        }
+    }
 
     return (
         <main>
@@ -81,6 +152,79 @@ function App() {
                     <>
                         <h2>Consulta de Produtos</h2>
 
+                        <button
+                            type="button"
+                            onClick={() => setMostrarCadastro(!mostrarCadastro)}
+                        >
+                            {mostrarCadastro ? 'Cancelar cadastro' : '+ Novo produto'}
+                        </button>
+
+
+                        {mostrarCadastro && (
+                            <div className="formulario-produto">
+                                <h3>Cadastrar novo produto</h3>
+
+                                <form onSubmit={(evento)=> {
+                                    evento.preventDefault()
+                                    void cadastrarProduto()
+                                }}
+                                >
+                                    <label htmlFor="nome-produto">Nome do produto</label>
+                                    <input
+                                        id="nome-produto"
+                                        type="text"
+                                        placeholder="Ex.: Arroz 5kg"
+                                        value={nomeProduto}
+                                        onChange={(evento) => setNomeProduto(evento.target.value)}
+                                        required
+                                    />
+
+                                    <label htmlFor="codigo-produto">Código interno</label>
+                                    <input
+                                        id="codigo-produto"
+                                        type="text"
+                                        placeholder="Ex.: ARR001"
+                                        value={codigoProduto}
+                                        onChange={(evento) => setCodigoProduto(evento.target.value)}
+                                    />
+
+                                    <label htmlFor="gtin-produto">GTIN / Código de barras</label>
+                                    <input
+                                        id="gtin-produto"
+                                        type="text"
+                                        placeholder="Digite o código de barras"
+                                        value={gtinProduto}
+                                        onChange={(evento) => setGtinProduto(evento.target.value)}
+                                    />
+
+                                    <label htmlFor="preco-produto">Preço de venda (R$)</label>
+                                    <input
+                                        id="preco-produto"
+                                        type="number"
+                                        min="0.01"
+                                        step="0.01"
+                                        placeholder="0,00"
+                                        value={precoProduto}
+                                        onChange={(evento) => setPrecoProduto(evento.target.value)}
+                                        required
+                                    />
+
+                                    <button type="submit">
+                                        Salvar produto
+                                    </button>
+                                </form>
+                            </div>
+                        )}
+
+
+                        <input
+                            type="text"
+                            className="pesquisa-produto"
+                            placeholder="Pesquisar produto pelo nome..."
+                            value={pesquisa}
+                            onChange={(evento) => setPesquisa(evento.target.value)}
+                        />
+
                         {erro && <p>{erro}</p>}
 
                         <table>
@@ -94,7 +238,15 @@ function App() {
                             </thead>
 
                             <tbody>
-                            {produtos.map((produto) => (
+                            {produtosFiltrados.length === 0 && (
+                                <tr>
+                                    <td colSpan={4} className="sem-produtos">
+                                        Nenhum produto encontrado.
+                                    </td>
+                                </tr>
+                            )}
+
+                            {produtosFiltrados.map((produto) => (
                                 <tr key={produto.id}>
                                     <td>{produto.codigoInterno}</td>
                                     <td>{produto.nome}</td>

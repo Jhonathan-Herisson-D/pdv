@@ -52,3 +52,115 @@ section {
   border-radius: 10px;
 }
 
+
+/* Tabela de produtos */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Cabeçalho da tabela */
+th {
+  background-color: #17365d;
+  color: white;
+  padding: 14px 10px;
+  text-align: left;
+}
+
+/* Células dos produtos */
+td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+/* Alterna a cor das linhas */
+tbody tr:nth-child(even) {
+  background-color: #f2f6fa;
+}
+
+/* Destaca o produto ao passar o mouse */
+tbody tr:hover {
+  background-color: #e3effa;
+}
+
+
+/* Campo de pesquisa de produtos */
+.pesquisa-produto {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 15px;
+  margin-top: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Destaca o campo quando o usuário digita */
+.pesquisa-produto:focus {
+  outline: none;
+  border-color: #1769aa;
+  box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.15);
+}
+
+/* Mensagem quando a pesquisa não encontra produtos */
+.sem-produtos {
+  text-align: center;
+  padding: 25px;
+  color: #666666;
+  font-style: italic;
+}
+
+/* Área do formulário de produtos */
+.formulario-produto {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.formulario-produto h3 {
+  margin-top: 0;
+  color: #17365d;
+}
+
+
+/* Organização dos campos do cadastro */
+.formulario-produto form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formulario-produto label {
+  font-weight: 600;
+  color: #333333;
+}
+
+.formulario-produto input {
+  padding: 12px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.formulario-produto input:focus {
+  outline: none;
+  border-color: #1769aa;
+}
+
+.formulario-produto form button {
+  margin-top: 12px;
+}
+
+
