@@ -35,6 +35,17 @@ function App() {
     const [gtinProduto, setGtinProduto] = useState('')
     const [precoProduto, setPrecoProduto] = useState('')
 
+    // Armazena o produto selecionado para edição.
+    // null significa que nenhum produto está sendo editado.
+    const [produtoEmEdicao, setProdutoEmEdicao] = useState<Produto | null>(null)
+
+    // Armazenam os valores digitados no formulário de edição.
+    // São separados dos estados utilizados no cadastro de produtos.
+    const [nomeEdicao, setNomeEdicao] = useState('')
+    const [codigoEdicao, setCodigoEdicao] = useState('')
+    const [gtinEdicao, setGtinEdicao] = useState('')
+    const [precoEdicao, setPrecoEdicao] = useState('')
+
     // Executa a consulta quando a aplicação é iniciada
     useEffect(() => {
         async function carregarProdutos() {
@@ -115,6 +126,79 @@ function App() {
         }
     }
 
+
+    async function atualizarProduto() {
+        // Verifica se existe um produto selecionado para edição.
+        if (!produtoEmEdicao) return
+
+        try {
+            // Envia os dados atualizados para o backend Spring Boot.
+            const resposta = await fetch(`/api/produtos/${produtoEmEdicao.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nome: nomeEdicao,
+                    codigoInterno: codigoEdicao,
+                    gtin: gtinEdicao || null,
+                    precoVenda: Number(precoEdicao),
+                    ativo: produtoEmEdicao.ativo,
+                }),
+            })
+
+            // Identifica o motivo da falha a partir do código HTTP.
+            if (!resposta.ok) {
+
+                // O backend rejeitou algum dado informado.
+                if (resposta.status === 400) {
+                    throw new Error('Dados inválidos. Verifique os campos do produto.')
+                }
+
+                // O código interno ou GTIN pode estar sendo utilizado.
+                if (resposta.status === 409) {
+                    throw new Error('Já existe outro produto com esse código ou GTIN.')
+                }
+
+                // O produto solicitado não foi encontrado.
+                if (resposta.status === 404) {
+                    throw new Error('Produto não encontrado.')
+                }
+
+                // Outros erros retornados pelo servidor.
+                throw new Error('Não foi possível atualizar o produto.')
+            }
+
+            // Recebe do backend o produto com os dados atualizados.
+            const produtoAtualizado: Produto = await resposta.json()
+
+            // Substitui o produto antigo pelo atualizado na tabela.
+            setProdutos((anteriores) =>
+                anteriores.map((produto) =>
+                    produto.id === produtoAtualizado.id
+                        ? produtoAtualizado
+                        : produto
+                )
+            )
+
+            // Fecha o formulário de edição.
+            setProdutoEmEdicao(null)
+
+            alert('Produto atualizado com sucesso!')
+        } catch (erro) {
+            // Registra o erro no console para facilitar a investigação.
+            console.error(erro)
+
+            // Mostra ao operador a mensagem específica do erro.
+            if (erro instanceof Error) {
+                alert(erro.message)
+            } else {
+                alert('Ocorreu um erro inesperado ao atualizar o produto.')
+            }
+        }
+    }
+
+
     return (
         <main>
             <header>
@@ -151,6 +235,69 @@ function App() {
                 {telaAtual === 'produtos' && (
                     <>
                         <h2>Consulta de Produtos</h2>
+
+
+                        {produtoEmEdicao && (
+                            <div className="formulario-produto">
+                                <h3>Editar produto</h3>
+
+                                <form
+                                    onSubmit={(evento) => {
+                                        // Impede que o navegador recarregue a página.
+                                        evento.preventDefault()
+
+                                        // Executa a atualização do produto.
+                                        void atualizarProduto()
+                                    }}
+                                >
+                                    <label htmlFor="nome-edicao">Nome do produto</label>
+                                    <input
+                                        id="nome-edicao"
+                                        type="text"
+                                        value={nomeEdicao}
+                                        onChange={(evento) => setNomeEdicao(evento.target.value)}
+                                        required
+                                    />
+
+                                    <label htmlFor="codigo-edicao">Código interno</label>
+                                    <input
+                                        id="codigo-edicao"
+                                        type="text"
+                                        value={codigoEdicao}
+                                        onChange={(evento) => setCodigoEdicao(evento.target.value)}
+                                    />
+
+                                    <label htmlFor="gtin-edicao">GTIN / Código de barras</label>
+                                    <input
+                                        id="gtin-edicao"
+                                        type="text"
+                                        value={gtinEdicao}
+                                        onChange={(evento) => setGtinEdicao(evento.target.value)}
+                                    />
+
+                                    <label htmlFor="preco-edicao">Preço de venda (R$)</label>
+                                    <input
+                                        id="preco-edicao"
+                                        type="number"
+                                        min="0.01"
+                                        step="0.01"
+                                        value={precoEdicao}
+                                        onChange={(evento) => setPrecoEdicao(evento.target.value)}
+                                        required
+                                    />
+
+                                    <button type="submit">Salvar alterações</button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setProdutoEmEdicao(null)}
+                                    >
+                                        Cancelar edição
+                                    </button>
+                                </form>
+                            </div>
+                        )}
+
 
                         <button
                             type="button"
@@ -234,13 +381,14 @@ function App() {
                                 <th>Produto</th>
                                 <th>Preço</th>
                                 <th>Situação</th>
+                                <th>Ações</th>
                             </tr>
                             </thead>
 
                             <tbody>
                             {produtosFiltrados.length === 0 && (
                                 <tr>
-                                    <td colSpan={4} className="sem-produtos">
+                                    <td colSpan={5} className="sem-produtos">
                                         Nenhum produto encontrado.
                                     </td>
                                 </tr>
@@ -261,6 +409,23 @@ function App() {
                                     </td>
                                     <td>
                                         {produto.ativo ? 'Ativo' : 'Inativo'}
+                                    </td>
+                                    <td>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                // Guarda o produto selecionado.
+                                                setProdutoEmEdicao(produto)
+
+                                                // Carrega os dados do produto no formulário de edição.
+                                                setNomeEdicao(produto.nome)
+                                                setCodigoEdicao(produto.codigoInterno)
+                                                setGtinEdicao(produto.gtin ?? '')
+                                                setPrecoEdicao(String(produto.precoVenda))
+                                            }}
+                                        >
+                                            Editar
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
