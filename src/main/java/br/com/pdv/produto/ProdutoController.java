@@ -27,6 +27,19 @@ public class ProdutoController {
         return produtoService.listarTodos();
     }
 
+    /**
+     * Consulta administrativa de produtos.
+     *
+     * Retorna todos os produtos cadastrados,
+     * independentemente de estarem ativos ou inativos.
+     *
+     * Endpoint: GET /api/produtos/todos
+     */
+    @GetMapping("/todos")
+    public List<Produto> listarTodosInclusiveInativos() {
+        return produtoService.listarTodosInclusiveInativos();
+    }
+
     @GetMapping("/nome/{nome}")
     public List<Produto> buscarPorNome(@PathVariable String nome) {
 

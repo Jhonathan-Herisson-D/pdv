@@ -39,6 +39,17 @@ public class ProdutoService {
         return produtoRepository.findByAtivoTrue();
     }
 
+    /**
+     * Lista todos os produtos cadastrados no sistema,
+     * incluindo os ativos e os inativos.
+     *
+     * Utilizado na administração de produtos para permitir
+     * a consulta e a reativação de produtos desativados.
+     */
+    public List<Produto> listarTodosInclusiveInativos() {
+        return produtoRepository.findAll();
+    }
+
     public List<Produto> buscarPorNome(String nome) {
         return produtoRepository
                 .findByNomeContainingIgnoreCaseAndAtivoTrue(nome);

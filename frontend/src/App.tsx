@@ -50,7 +50,8 @@ function App() {
     useEffect(() => {
         async function carregarProdutos() {
             try {
-                const resposta = await fetch('/api/produtos')
+                // Consulta todos os produtos, inclusive os inativos.
+                const resposta = await fetch('/api/produtos/todos')
 
                 if (!resposta.ok) {
                     throw new Error('Erro ao consultar produtos')
@@ -198,6 +199,96 @@ function App() {
         }
     }
 
+    async function desativarProduto(produto: Produto) {
+        // Solicita a confirmação antes de desativar o produto.
+        const confirmado = window.confirm(
+            `Deseja realmente desativar o produto "${produto.nome}"?`
+        )
+
+        // Se o operador cancelar, nenhuma alteração será realizada.
+        if (!confirmado) return
+
+        try {
+            // Envia a solicitação de desativação ao Spring Boot.
+            const resposta = await fetch(`/api/produtos/${produto.id}`, {
+                method: 'DELETE',
+            })
+
+            // Verifica se o backend concluiu a operação.
+            if (!resposta.ok) {
+                throw new Error('Não foi possível desativar o produto.')
+            }
+
+            // Atualiza a situação do produto na tabela do React.
+            setProdutos((anteriores) =>
+                anteriores.map((item) =>
+                    item.id === produto.id
+                        ? { ...item, ativo: false }
+                        : item
+                )
+            )
+
+            // Informa que a operação foi concluída.
+            alert('Produto desativado com sucesso!')
+        } catch (erro) {
+            // Registra o erro para facilitar a investigação.
+            console.error(erro)
+
+            // Apresenta uma mensagem ao operador.
+            if (erro instanceof Error) {
+                alert(erro.message)
+            } else {
+                alert('Ocorreu um erro inesperado.')
+            }
+        }
+    }
+
+    async function reativarProduto(produto: Produto) {
+        // Solicita a confirmação antes de reativar o produto.
+        const confirmado = window.confirm(
+            `Deseja realmente reativar o produto "${produto.nome}"?`
+        )
+
+        // Se o operador cancelar, encerra a operação.
+        if (!confirmado) return
+
+        try {
+            // Envia a solicitação de reativação ao Spring Boot.
+            const resposta = await fetch(
+                `/api/produtos/${produto.id}/reativar`,
+                {
+                    method: 'PUT',
+                }
+            )
+
+            // Verifica se o backend concluiu a reativação.
+            if (!resposta.ok) {
+                throw new Error('Não foi possível reativar o produto.')
+            }
+
+            // Atualiza a situação do produto na tabela do React.
+            setProdutos((anteriores) =>
+                anteriores.map((item) =>
+                    item.id === produto.id
+                        ? { ...item, ativo: true }
+                        : item
+                )
+            )
+
+            // Informa que a reativação foi concluída.
+            alert('Produto reativado com sucesso!')
+        } catch (erro) {
+            // Registra o erro no console para investigação.
+            console.error(erro)
+
+            // Apresenta uma mensagem ao operador.
+            if (erro instanceof Error) {
+                alert(erro.message)
+            } else {
+                alert('Ocorreu um erro inesperado.')
+            }
+        }
+    }
 
     return (
         <main>
@@ -426,6 +517,28 @@ function App() {
                                         >
                                             Editar
                                         </button>
+                                        {produto.ativo ? (
+                                            // Produto ativo: permite realizar a desativação.
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    void desativarProduto(produto)
+                                                }}
+                                            >
+                                                Desativar
+                                            </button>
+                                        ) : (
+                                            // Produto inativo: apresenta a opção de reativação.
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    // Executa a reativação do produto selecionado.
+                                                    void reativarProduto(produto)
+                                                }}
+                                            >
+                                                Reativar
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
