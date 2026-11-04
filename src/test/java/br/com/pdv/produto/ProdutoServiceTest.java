@@ -648,4 +648,46 @@ class ProdutoServiceTest {
         verify(repository, never()).existsByGtin(anyString());
         verify(repository, never()).existsByCodigoInterno(anyString());
     }
+
+    @Test
+    void deveListarProdutosAtivosEInativos() {
+
+        // Cria um repositório simulado usando Mockito.
+        ProdutoRepository repository = mock(ProdutoRepository.class);
+
+        // Cria o serviço que será testado.
+        ProdutoService service = new ProdutoService(repository);
+
+        // Cria um produto ativo.
+        Produto arroz = new Produto();
+        arroz.setId(1L);
+        arroz.setNome("Arroz 5kg");
+        arroz.setAtivo(true);
+
+        // Cria um produto inativo.
+        Produto feijao = new Produto();
+        feijao.setId(2L);
+        feijao.setNome("Feijão 1kg");
+        feijao.setAtivo(false);
+
+        // Simula o banco retornando os dois produtos.
+        when(repository.findAll())
+                .thenReturn(List.of(arroz, feijao));
+
+        // Executa a consulta administrativa.
+        List<Produto> resultado =
+                service.listarTodosInclusiveInativos();
+
+        // Verifica se os dois produtos foram retornados.
+        assertEquals(2, resultado.size());
+
+        // Confirma que o primeiro produto está ativo.
+        assertTrue(resultado.get(0).getAtivo());
+
+        // Confirma que o segundo produto está inativo.
+        assertFalse(resultado.get(1).getAtivo());
+
+        // Verifica se o serviço utilizou a consulta correta.
+        verify(repository).findAll();
+    }
 }
